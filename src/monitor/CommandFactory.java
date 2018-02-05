@@ -21,7 +21,7 @@ public class CommandFactory {
         commands = new HashMap<>();
         commands.put("swapblocks", new SwapBlockCommand(system, args));
         commands.put("deleteblock", new DeleteBlockCommand(system, args));
-        commands.put("permutateblocks", new PermutateBlocksCommand(system, args));
+        commands.put("permuteblocks", new PermuteBlocksCommand(system, args));
         commands.put("glue", new GlueCommand(system, args));
         
         commands.put("addrow", new AddRowCommand(system, args));
@@ -40,6 +40,7 @@ public class CommandFactory {
         commands.put("exit", new ExitCommand(args));
         commands.put("help", new HelpCommand(args));
         commands.put("solve", new SolveCommand(system, args));
+        commands.put("echo", new EchoCommand(args));
     }
 
     public void getAndExecuteCommand(String commandName) {
