@@ -20,7 +20,7 @@ public class PermuteBlocksCommand implements Command {
     private boolean checkNumberOfArguments(){
         List<String> args = arguments.getArguments();
         if (args.size() > 1) {
-            System.out.println("permutateblocks: Illegal number of arguments.");
+            System.err.println("permutateblocks: Illegal number of arguments.");
             return false;
         }
         return true;

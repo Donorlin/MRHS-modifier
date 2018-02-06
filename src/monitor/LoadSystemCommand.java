@@ -21,7 +21,7 @@ public class LoadSystemCommand implements Command{
     private boolean checkNumberOfArguments(){
         List<String> args = arguments.getArguments();
         if (args.size() > 1) {
-            System.out.println("load: Illegal number of arguments.");
+            System.err.println("load: Illegal number of arguments.");
             return false;
         }
         

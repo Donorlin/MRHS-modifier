@@ -33,7 +33,9 @@ public class SolveCommand implements Command {
             p.waitFor();
             System.out.println(getOutput(p));
         } catch (InterruptedException ex) {
+            System.err.println("solve: Interrupted exception.");
         } catch (IOException ex) {
+            System.err.println("solve: IO exception occured.");
         }
     }
 
@@ -47,7 +49,7 @@ public class SolveCommand implements Command {
             }
             return sb.toString();
         } catch (IOException e) {
-            System.out.println("solve: Cant get output from process.");
+            System.err.println("solve: Cant get output from process.");
         }   
         return null;
     }

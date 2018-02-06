@@ -46,7 +46,7 @@ public class MrhsWriter {
                 file.createNewFile();
             }
         }catch(IOException e){
-            System.out.println("writeToFile: Can't create file");
+            System.err.println("writeToFile: Can't create file");
         }
         if (file.exists()) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))){                
@@ -54,7 +54,7 @@ public class MrhsWriter {
                 bw.flush();
                 return true;
             } catch (IOException e) {
-                System.out.println("writeToFile: Can't write to file.");
+                System.err.println("writeToFile: Can't write to file.");
             } 
         }      
        

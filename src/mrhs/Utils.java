@@ -13,8 +13,8 @@ public class Utils {
     protected static boolean checkBlocksBounds(MrhsSystem system, String sender, int... indices) {
         for (int i : indices) {
             if (i < 0 || i >= system.getnBlocks()) {
-                System.out.println(sender + " in System: Input indices are out of bounds.");
-                System.out.println("System has " + system.getnBlocks() + " blocks.");
+                System.err.println(sender + " in System: Input indices are out of bounds.");
+                System.err.println("System has " + system.getnBlocks() + " blocks.");
                 return false;
             }
         }
@@ -24,8 +24,8 @@ public class Utils {
     protected static boolean checkRowsBounds(MrhsSystem system, String sender, int... indices) {
         for (int i : indices) {
             if (i < 0 || i >= system.getnRows()) {
-                System.out.println(sender + " in System: Input indices are out of bounds.");
-                System.out.println("System has " + system.getnRows() + " rows.");
+                System.err.println(sender + " in System: Input indices are out of bounds.");
+                System.err.println("System has " + system.getnRows() + " rows.");
                 return false;
             }
         }
@@ -35,8 +35,8 @@ public class Utils {
     protected static boolean checkColumnsBounds(MrhsEquation equation, String sender, int... indices) {
         for (int i : indices) {
             if (i < 0 || i >= equation.getnCols()) {
-                System.out.println(sender + " in Equation: Input indices are out of bounds.");
-                System.out.println("This equation has " + equation.getnCols() + " columns.");
+                System.err.println(sender + " in Equation: Input indices are out of bounds.");
+                System.err.println("This equation has " + equation.getnCols() + " columns.");
                 return false;
             }
         }
@@ -45,7 +45,7 @@ public class Utils {
 
     protected static boolean checkPermutation(MrhsSystem system, List<Integer> permutation, String sender) {
         if (system.getnBlocks() != permutation.size()) {
-            System.out.println(sender + ": Permutation's length does not match number of blocks.");
+            System.err.println(sender + ": Permutation's length does not match number of blocks.");
             return false;
         }
         List<Integer> sortedPerm = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Utils {
         Collections.sort(sortedPerm);
         for (int i = 0; i < sortedPerm.size(); i++) {
             if (sortedPerm.get(i) != i) {
-                System.out.println(sender + ": Wrong permutation.");
+                System.err.println(sender + ": Wrong permutation.");
                 return false;
             }
         }

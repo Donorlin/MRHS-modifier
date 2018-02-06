@@ -15,9 +15,9 @@ public class Monitor {
     private static final String VERSION = "0.1";
     // 0.1 glue added, permfile added, save fixed
 
-    private MrhsSystem system = new MrhsSystem();
+    private final MrhsSystem system = new MrhsSystem();
     private final Arguments arguments = new Arguments();
-    private final CommandFactory commands = new CommandFactory(this.system, arguments);
+    private final CommandFactory commands = new CommandFactory(system, arguments);
       
     public Monitor(String[] args) {
         if (args.length > 0) {

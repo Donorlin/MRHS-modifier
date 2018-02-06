@@ -20,35 +20,36 @@ public class HelpCommand implements Command{
     }
 
     private void printListOfCommands(){
-        System.out.println("List of console commands:");
+        System.err.println("List of console commands:");
         //help for utils
-        System.out.println("");
-        System.out.println("[load filename]                             Loads system from file with name filename");
-        System.out.println("[load]                                      Loads system from file chosen by filechooser");
-        System.out.println("[save filename]                             Saves system to file named filename");
-        System.out.println("[save]                                      Saves system to file chosen by filechooser");
-        System.out.println("[random blocks rows cols rhs randomRange]   Generates random mrhs system to work with.");
-        System.out.println("[info]                                      Prints info about system");
-        System.out.println("[show]                                      Prints actual mrhs system");
-        System.out.println("[help]                                      Prints list of commands");
-        System.out.println("[exit]                                      Exits program");
+        System.err.println("");
+        System.err.println("[load filename]                             Loads system from file with name filename");
+        System.err.println("[load]                                      Loads system from file chosen by filechooser");
+        System.err.println("[save filename]                             Saves system to file named filename");
+        System.err.println("[save]                                      Saves system to file chosen by filechooser");
+        System.err.println("[random blocks rows cols rhs randomRange]   Generates random mrhs system to work with.");
+        System.err.println("[info]                                      Prints info about system");
+        System.err.println("[show]                                      Prints actual mrhs system");
+        System.err.println("[help]                                      Prints list of commands");
+        System.err.println("[echo your message]                         Prints all arguments given to echo");
+        System.err.println("[exit]                                      Exits program");
 
         //help for mrhs modifaction methods
-        System.out.println("");
-        System.out.println("[swaprows i j]                              Swaps i-th row with j-th row");
-        System.out.println("[addrow to toAdd]                           XORs to-th row with toAdd-th row");
-        System.out.println("[deleterow i]                               Deletes i-th row");
+        System.err.println("");
+        System.err.println("[swaprows i j]                              Swaps row i with row j");
+        System.err.println("[addrow to toAdd]                           XORs row to with row toAdd");
+        System.err.println("[deleterow i]                               Deletes row i");
         
-        System.out.println("[swapcols block i j]                        Swaps i-th column wiht j-th column in block-th block");
-        System.out.println("[addcol block to toAdd]                     XORs to-th column with toAdd-th column in block-th block");
-        System.out.println("[deletecol block i]                         Deletes i-th column in block-th block");
+        System.err.println("[swapcols block i j]                        Swaps column i with column j in equation block");
+        System.err.println("[addcol block to toAdd]                     XORs column to with column toAdd in equation block");
+        System.err.println("[deletecol block i]                         Deletes column i in equation block");
         
-        System.out.println("[swapblocks i j]                            Swaps i-th block with j-th");
-        System.out.println("[deleteblock i]                             Deletes i-th block");
-        System.out.println("[glue i j keepOld]                          Apply gluing on i-th and j-th block");
-        System.out.println("[permutateblocks]                           Apply random permutation on blocks");
-        System.out.println("[permutateblocks fileName                   Apply permutation contained in file named fileName on blocks");
-
+        System.err.println("[swapblocks i j]                            Swaps block i with block j");
+        System.err.println("[deleteblock i]                             Deletes block i");
+        System.err.println("[glue i j keepOld]                          Apply gluing on equations i and j");
+        System.err.println("[permutateblocks]                           Apply random permutation on blocks");
+        System.err.println("[permutateblocks fileName]                  Apply permutation contained in file named fileName on blocks");
+        System.err.println("[normalize block]                           TODO");
     }
     
 }

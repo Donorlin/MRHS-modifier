@@ -46,7 +46,7 @@ public class MrhsReader {
             readLeftHandValues(scan, system);
             readRightHandValues(scan, system);
         } catch (FileNotFoundException e) {
-            System.out.println("File not found.");
+            System.err.println("File not found.");
         }
         system.setIsSystemLoaded(true);
     }
@@ -131,7 +131,7 @@ public class MrhsReader {
             String line = scan.nextLine();
             permutation = strToIntList(Arrays.asList(line.split(" ")));
         }catch(FileNotFoundException e) {
-            System.out.println("File not found.");
+            System.err.println("File not found.");
         }       
         
         return permutation;

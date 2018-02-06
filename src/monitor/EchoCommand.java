@@ -18,8 +18,8 @@ public class EchoCommand implements Command {
     public void execute() {
         List<String> args = arguments.getArguments();
         for(String echo: args){
-            System.out.print(echo + " ");
+            System.err.print(echo + " ");
         }
-        System.out.println("");
+        System.err.println("");
     }
 }
