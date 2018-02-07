@@ -192,12 +192,11 @@ public class MrhsEquation {
     }
 
     protected int normalize() {
-        int pivots = gauss();
-        checkAndFixZeroColumns();
-        return pivots;
+        gauss();        
+        return checkAndFixZeroColumns();
     }
 
-    private void checkAndFixZeroColumns() {       
+    private int checkAndFixZeroColumns() {       
         for (int i = 0; i < nCols; i++) {
             if (isZeroColumn(i)) {
                 Iterator<ArrayList<Integer>> it = rightSide.iterator();
@@ -205,11 +204,12 @@ public class MrhsEquation {
                     ArrayList<Integer> rhs = it.next();
                     if(rhs.get(i) == 1){
                         it.remove();
-                        nRHS--;
                     }
                 }
             }
         }
+        nRHS = rightSide.size();
+        return rightSide.size();
     }
     
     private boolean isZeroColumn(int i) {

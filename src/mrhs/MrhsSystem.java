@@ -438,7 +438,7 @@ public class MrhsSystem {
             return;
         }
         for(int i = 0; i < system.size(); i++){
-            System.err.println("Equation " + i + " rows " + system.get(i).getnRows() + " cols " + system.get(i).getnCols() + " rhs " + system.get(i).getnRHS());
+            System.err.println("Equation " + i + " rows " + system.get(i).getnRows() + " cols " + system.get(i).getRightSide().size()+ " rhs " + system.get(i).getnRHS());
         }
     }
 
@@ -446,8 +446,8 @@ public class MrhsSystem {
         Random rand = new Random(System.currentTimeMillis());
         this.nRows = nRows;
         this.nBlocks = nBlocks;
-        system = new ArrayList<>();
-        for (int i = 0; i < nBlocks; i++) {
+        system = new ArrayList<>(nBlocks);
+        while (system.size() != nBlocks) {
             MrhsEquation eq = new MrhsEquation();
             eq.setnRows(nRows);
 
@@ -457,12 +457,11 @@ public class MrhsSystem {
             }
             eq.setnCols(nCols);
             eq.generateRandomLeftSide(rand, nRows, nCols);
-
-            eq.setnRHS(nRHS);
-            
+            eq.setnRHS(nRHS);            
             eq.generateRandomRightSides(rand, nRHS, nCols);
-                
-            system.add(eq);
+            if(eq.normalize() == nRHS){
+                system.add(eq);
+            }      
         }
         isSystemLoaded = true;
     }
