@@ -1,8 +1,10 @@
 package mrhs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -145,4 +147,67 @@ public class MrhsEquation {
             nCols--;
         }
     }
+
+    private int findPivot(int fromCol, int inRow) {
+        int result = -1;
+        for (int i = fromCol; i < nCols; i++) {
+            if (leftSide.get(inRow).get(i) == 1) {
+                return i;
+            }
+        }
+        return result;
+    }
+
+    private int gauss() {
+        int nPivots = 0;
+        int lead = 0;
+        int i;
+        for (int c = 0; c < nCols; c++) {
+            if (nRows <= lead) {
+                return nPivots;
+            } else {
+                i = c;
+            }
+            int pivot = -1;
+            while ((pivot = findPivot(i, lead)) == -1) {
+                lead++;
+                if (nRows == lead) {
+                    return nPivots;
+                }
+            }
+            nPivots++;
+            swapCols(c, pivot);
+            for (int j = 0; j < nCols; j++) {
+                if (j != c && (leftSide.get(lead).get(j) == 1)) {
+                    addCol(j, c);
+                }
+            }
+            lead++;
+        }
+        return nPivots;
+    }
+
+    protected int normalize() {
+        int pivots = gauss();
+        checkAndFixZeroColumns();
+        return pivots;
+    }
+
+    private void checkAndFixZeroColumns() {       
+        for (int i = 0; i < nCols; i++) {
+            if (isZeroColumn(i)) {
+                //TODO                
+            }
+        }
+    }
+    
+    private boolean isZeroColumn(int i) {
+        for (ArrayList<Integer> lhs : leftSide) {
+            if (lhs.get(i) == 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 }

@@ -102,9 +102,9 @@ public class MrhsSystem {
      * @param j j-th block to swap
      */
     public void swapBlocks(int i, int j) {
-        if (Utils.checkBlocksBounds(this, "swapblocks", i, j)) {
-            Collections.swap(system, i, j);
-        }
+        i = Math.floorMod(i, system.size());
+        j = Math.floorMod(j, system.size());
+        Collections.swap(system, i, j);
     }
 
     public void deleteBlock(int i) {
@@ -191,11 +191,13 @@ public class MrhsSystem {
         }
     }
 
-    public void glue(int iB, int jB, int keepOld) {
-        if(!Utils.checkBlocksBounds(this, "glue", iB, jB)){
+    public void glue(int iB, int jB, int keepOld) {        
+        iB = Math.floorMod(iB, system.size());        
+        jB = Math.floorMod(jB, system.size());
+        if(iB == jB){
             return;
         }
-        MrhsEquation glued = createGluedBlock(iB, jB);
+        MrhsEquation glued = createGluedBlock(iB, jB);        
         if (keepOld > 0) {
             system.add(glued);
             nBlocks++;
@@ -203,10 +205,13 @@ public class MrhsSystem {
             if (iB < jB) {
                 system.remove(jB);
                 system.remove(iB);
-                system.add(iB, glued);
             } else if (jB < iB) {
                 system.remove(iB);
                 system.remove(jB);
+            }
+            if (iB > system.size()) {
+                system.add(glued);
+            } else {
                 system.add(iB, glued);
             }
             nBlocks--;
@@ -221,7 +226,8 @@ public class MrhsSystem {
         glued.setLeftSide(createGluedLeftHandSide(iB, jB));
         glued.setRightSide(createGluedRightHandSides(iB, jB));
         glued.setnRHS(glued.getRightSide().size());
-
+        glued.normalize();
+        
         return glued;
     }
 
@@ -287,6 +293,12 @@ public class MrhsSystem {
             }
         }
         return result;
+    }
+
+    public void normalize(int i) {
+        if (Utils.checkBlocksBounds(this, "normalize", i)) {
+            system.get(i).normalize();
+        }
     }
 
     private int nCols() {
@@ -355,7 +367,7 @@ public class MrhsSystem {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (!checkSizes()) {
-            System.out.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
+            System.err.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
             return null;
         }
         sb.append("\n");
@@ -401,7 +413,7 @@ public class MrhsSystem {
         String newLineChar = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder();
         if (!checkSizes()) {
-            System.out.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
+            System.err.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
             return null;
         }
         sb.append(nRows + newLineChar);
@@ -434,11 +446,11 @@ public class MrhsSystem {
     }
 
     public void infoSystem() {
-        System.out.println("");
-        System.out.println("This system has:");
-        System.out.println("Blocks:        " + nBlocks);
-        System.out.println("Rows:          " + nRows);
-        System.out.println("Total columns: " + nCols());
+        System.err.println("");
+        System.err.println("This system has:");
+        System.err.println("Blocks:        " + nBlocks);
+        System.err.println("Rows:          " + nRows);
+        System.err.println("Total columns: " + nCols());
     }
 
     public void generateRandomSystem(int nRows, int nBlocks, int nCols, int nRHS, int randomRange) {
@@ -452,13 +464,11 @@ public class MrhsSystem {
 
             if (randomRange == 1) {
                 nCols = rand.nextInt(nCols) + 1;
+                nRHS = rand.nextInt(nRHS) + 1;
             }
             eq.setnCols(nCols);
             eq.generateRandomLeftSide(rand, nRows, nCols);
 
-            if (randomRange == 1) {
-                nRHS = rand.nextInt(nRHS) + 1;
-            }
             eq.setnRHS(nRHS);
             eq.generateRandomRightSides(rand, nRHS, nCols);
 
