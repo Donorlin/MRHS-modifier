@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mrhs;
 
 import java.io.BufferedWriter;
@@ -14,7 +9,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author mrave
+ * @author Daniel Jahodka
  */
 public class MrhsWriter {
 
