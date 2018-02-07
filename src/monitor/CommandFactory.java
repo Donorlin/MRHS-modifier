@@ -23,6 +23,7 @@ public class CommandFactory {
         commands.put("deleteblock", new DeleteBlockCommand(system, args));
         commands.put("permuteblocks", new PermuteBlocksCommand(system, args));
         commands.put("glue", new GlueCommand(system, args));
+        commands.put("normalize", new NormalizeEquationCommand(system, args));
         
         commands.put("addrow", new AddRowCommand(system, args));
         commands.put("swaprows", new SwapRowsCommand(system, args));
@@ -48,7 +49,7 @@ public class CommandFactory {
             commands.get(commandName).execute();
             return;
         }
-        System.out.println("Command not found. For list of commands type \"help\"");
+        System.err.println("Command not found. For list of commands type \"help\"");
     }
 
 }
