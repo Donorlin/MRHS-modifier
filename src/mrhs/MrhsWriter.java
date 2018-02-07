@@ -35,29 +35,29 @@ public class MrhsWriter {
     }
 
     public boolean writeToFile(File file, MrhsSystem system) {
-        if(file == null){
+        if (file == null) {
             file = chooseFileWrite();
         }
-        if(file == null){
+        if (file == null) {
             return false;
         }
-        try{
-            if(!file.exists()){
+        try {
+            if (!file.exists()) {
                 file.createNewFile();
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             System.err.println("writeToFile: Can't create file");
         }
         if (file.exists()) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))){                
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
                 bw.write(system.toFileString());
                 bw.flush();
                 return true;
             } catch (IOException e) {
                 System.err.println("writeToFile: Can't write to file.");
-            } 
-        }      
-       
+            }
+        }
+
         return false;
     }
 }

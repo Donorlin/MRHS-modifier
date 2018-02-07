@@ -1,9 +1,7 @@
 package mrhs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -17,7 +15,7 @@ public class MrhsEquation {
     private int nCols;
     private int nRHS;
     private ArrayList<ArrayList<Integer>> leftSide;
-    private HashSet<ArrayList<Integer>> rightSide;
+    private ArrayList<ArrayList<Integer>> rightSide;
 
     protected void generateRandomLeftSide(Random rand, int nRows, int nCols) {
         leftSide = new ArrayList<>();
@@ -31,16 +29,22 @@ public class MrhsEquation {
     }
 
     protected void generateRandomRightSides(Random rand, int nRHS, int nCols) {
-        rightSide = new HashSet<>();
-        for (int j = 0; j < nRHS; j++) {
+        rightSide = new ArrayList<>();
+        while(rightSide.size() != nRHS){
             ArrayList<Integer> r = new ArrayList<>();
             for (int k = 0; k < nCols; k++) {
                 r.add(rand.nextInt(2));
             }
-            rightSide.add(r);
+            if(!containsRhs(r)){
+                rightSide.add(r);
+            }  
         }
     }
-
+    
+    protected boolean containsRhs(ArrayList<Integer> rhs){
+        return rightSide.contains(rhs);
+    }
+    
     protected void setnRHS(int nRHS) {
         this.nRHS = nRHS;
     }
@@ -53,7 +57,7 @@ public class MrhsEquation {
         this.nRows = nRows;
     }
 
-    protected void setRightSide(HashSet<ArrayList<Integer>> leftSide) {
+    protected void setRightSide(ArrayList<ArrayList<Integer>> leftSide) {
         this.rightSide = leftSide;
     }
 
@@ -77,7 +81,7 @@ public class MrhsEquation {
         return leftSide;
     }
 
-    protected HashSet<ArrayList<Integer>> getRightSide() {
+    protected ArrayList<ArrayList<Integer>> getRightSide() {
         return rightSide;
     }
 
@@ -196,7 +200,14 @@ public class MrhsEquation {
     private void checkAndFixZeroColumns() {       
         for (int i = 0; i < nCols; i++) {
             if (isZeroColumn(i)) {
-                //TODO                
+                Iterator<ArrayList<Integer>> it = rightSide.iterator();
+                for(;it.hasNext();){
+                    ArrayList<Integer> rhs = it.next();
+                    if(rhs.get(i) == 1){
+                        it.remove();
+                        nRHS--;
+                    }
+                }
             }
         }
     }

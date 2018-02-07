@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
@@ -64,7 +63,7 @@ public class MrhsReader {
             eq.setnCols(scan.nextInt());
             eq.setnRHS(scan.nextInt());
             eq.setLeftSide(new ArrayList<>(system.getnRows()));
-            eq.setRightSide(new HashSet<>(eq.getnRHS()));
+            eq.setRightSide(new ArrayList<>(eq.getnRHS()));
             system.getSystem().add(eq);
         }
     }
@@ -118,7 +117,9 @@ public class MrhsReader {
                 }
                 tmp = scan.next();
                 list.add(Integer.parseInt(tmp.substring(0, 1)));
-                system.getSystem().get(i).getRightSide().add(list);
+                if(!system.getSystem().get(i).containsRhs(list)){
+                    system.getSystem().get(i).getRightSide().add(list);
+                }        
             }
         }
     }

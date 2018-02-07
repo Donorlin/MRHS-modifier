@@ -3,7 +3,6 @@ package mrhs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -232,9 +231,9 @@ public class MrhsSystem {
     }
 
     private ArrayList<ArrayList<Integer>> createGluedLeftHandSide(int iB, int jB) {
-        ArrayList<ArrayList<Integer>> newLeftSide = cloneLeftHand(system.get(iB).getLeftSide());
-
-        ArrayList<ArrayList<Integer>> leftSideOfJ = cloneLeftHand(system.get(jB).getLeftSide());
+        ArrayList<ArrayList<Integer>> newLeftSide = cloneHandValues(system.get(iB).getLeftSide());
+        ArrayList<ArrayList<Integer>> leftSideOfJ = cloneHandValues(system.get(jB).getLeftSide());
+        
         for (int i = 0; i < leftSideOfJ.size(); i++) {
             ArrayList<Integer> rowFromLeftSideOfJ = leftSideOfJ.get(i);
             newLeftSide.get(i).addAll(rowFromLeftSideOfJ);
@@ -242,10 +241,10 @@ public class MrhsSystem {
         return newLeftSide;
     }
 
-    private HashSet<ArrayList<Integer>> createGluedRightHandSides(int iB, int jB) {
-        HashSet<ArrayList<Integer>> newRightSides = new HashSet<>();
-        HashSet<ArrayList<Integer>> rightSidesOfI = cloneRightHand(system.get(iB).getRightSide());
-        HashSet<ArrayList<Integer>> rightSidesOfJ = cloneRightHand(system.get(jB).getRightSide());
+    private ArrayList<ArrayList<Integer>> createGluedRightHandSides(int iB, int jB) {
+        ArrayList<ArrayList<Integer>> newRightSides = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> rightSidesOfI = cloneHandValues(system.get(iB).getRightSide());
+        ArrayList<ArrayList<Integer>> rightSidesOfJ = cloneHandValues(system.get(jB).getRightSide());
 
         for (ArrayList<Integer> rhsI : rightSidesOfI) {
             for (ArrayList<Integer> rhsJ : rightSidesOfJ) {
@@ -258,7 +257,7 @@ public class MrhsSystem {
         return newRightSides;
     }
 
-    private ArrayList<ArrayList<Integer>> cloneLeftHand(ArrayList<ArrayList<Integer>> lhs) {
+    private ArrayList<ArrayList<Integer>> cloneHandValues(ArrayList<ArrayList<Integer>> lhs) {
         ArrayList<ArrayList<Integer>> clone = new ArrayList<>(lhs.size());
         for (ArrayList<Integer> row : lhs) {
             ArrayList<Integer> newRow = new ArrayList<>();
@@ -266,18 +265,6 @@ public class MrhsSystem {
                 newRow.add(i);
             }
             clone.add(newRow);
-        }
-        return clone;
-    }
-
-    private HashSet<ArrayList<Integer>> cloneRightHand(HashSet<ArrayList<Integer>> rhs) {
-        HashSet<ArrayList<Integer>> clone = new HashSet<>(rhs.size());
-        for (ArrayList<Integer> vector : rhs) {
-            ArrayList<Integer> newVector = new ArrayList<>();
-            for (Integer i : vector) {
-                newVector.add(i);
-            }
-            clone.add(newVector);
         }
         return clone;
     }
@@ -445,12 +432,14 @@ public class MrhsSystem {
         return sb.toString().replaceAll("[^0-9-\\[\\] \\n]", "");
     }
 
-    public void infoSystem() {
-        System.err.println("");
-        System.err.println("This system has:");
-        System.err.println("Blocks:        " + nBlocks);
-        System.err.println("Rows:          " + nRows);
-        System.err.println("Total columns: " + nCols());
+    public void infoSystem() {  
+        if(!checkSizes()){
+            System.err.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
+            return;
+        }
+        for(int i = 0; i < system.size(); i++){
+            System.err.println("Equation " + i + " rows " + system.get(i).getnRows() + " cols " + system.get(i).getnCols() + " rhs " + system.get(i).getnRHS());
+        }
     }
 
     public void generateRandomSystem(int nRows, int nBlocks, int nCols, int nRHS, int randomRange) {
@@ -462,7 +451,7 @@ public class MrhsSystem {
             MrhsEquation eq = new MrhsEquation();
             eq.setnRows(nRows);
 
-            if (randomRange == 1) {
+            if (randomRange >= 1) {
                 nCols = rand.nextInt(nCols) + 1;
                 nRHS = rand.nextInt(nRHS) + 1;
             }
@@ -470,8 +459,9 @@ public class MrhsSystem {
             eq.generateRandomLeftSide(rand, nRows, nCols);
 
             eq.setnRHS(nRHS);
+            
             eq.generateRandomRightSides(rand, nRHS, nCols);
-
+                
             system.add(eq);
         }
         isSystemLoaded = true;
