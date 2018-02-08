@@ -40,6 +40,9 @@ public class HelpCommand implements Command {
                     case "random":
                         helpRandom();
                         break;
+                    case "solve":
+                        helpSolve();
+                        break;
                     case "info":
                         helpInfo();
                         break;
@@ -98,6 +101,7 @@ public class HelpCommand implements Command {
         System.err.println("[save filename]                             Saves system to file named filename");
         System.err.println("[save]                                      Saves system to file chosen by filechooser");
         System.err.println("[random blocks rows cols rhs randomRange]   Generates random mrhs system to work with.");
+        System.err.println("[solve solver fileName]                     Execute external solver executable with file fileName to solve");        
         System.err.println("[info]                                      Prints info about system");
         System.err.println("[show]                                      Prints actual mrhs system");
         System.err.println("[help]                                      Prints list of commands");
@@ -132,6 +136,10 @@ public class HelpCommand implements Command {
 
     private void helpRandom() {
 
+    }
+    
+    private void helpSolve(){
+        
     }
 
     private void helpInfo() {
