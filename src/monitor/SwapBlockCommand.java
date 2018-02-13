@@ -18,12 +18,13 @@ public class SwapBlockCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 2, "swapblocks") 
                 && Utils.checkTypeOfArguments(arguments, "swapblocks") 
                 && Utils.checkIsSystemLoaded(system, "swapblocks")) {
-            system.swapBlocks(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
+            return system.swapBlocks(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
         }
+        return false;
     }
 }

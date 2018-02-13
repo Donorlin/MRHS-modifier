@@ -18,13 +18,14 @@ public class SwapRowsCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 2, "swaprows") 
                 && Utils.checkTypeOfArguments(arguments, "swaprows") 
                 && Utils.checkIsSystemLoaded(system, "swaprows")) {
-            system.swapRows(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
+            return system.swapRows(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
         }
+        return false;
     }
 
 }

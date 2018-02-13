@@ -29,7 +29,7 @@ public class MrhsReader {
         return null;
     }
 
-    public void readFromFile(String str, MrhsSystem system) {
+    public boolean readFromFile(String str, MrhsSystem system) {
         File file;
         if (str == null) {
             file = chooseFileRead();
@@ -37,7 +37,7 @@ public class MrhsReader {
             file = new File(str);
         }
         if (file == null) {
-            return;
+            return false;
         }
         try (Scanner scan = new Scanner(file)) {
             readMetaInfoSystem(scan, system);
@@ -46,8 +46,10 @@ public class MrhsReader {
             readRightHandValues(scan, system);
         } catch (FileNotFoundException e) {
             System.err.println("File not found.");
+            return false;
         }
         system.setIsSystemLoaded(true);
+        return true;
     }
 
     private void readMetaInfoSystem(Scanner scan, MrhsSystem system) {

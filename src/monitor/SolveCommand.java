@@ -19,23 +19,29 @@ public class SolveCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
-        try {
-            ProcessBuilder proc = new ProcessBuilder("./" + args.get(0), "-f", args.get(1));
-            proc.inheritIO();
-            Process p = proc.start();
-            p.waitFor();
-            System.out.println(getOutput(p));
-        } catch (InterruptedException ex) {
-            System.err.println("solve: Interrupted exception.");
-        } catch (IOException ex) {
-            System.err.println("solve: IO exception occured.");
+        if (Utils.checkNumberOfArguments(arguments, 2, "solve")) {
+            try {
+                ProcessBuilder proc = new ProcessBuilder("./" + args.get(0), "-f", args.get(1));
+                proc.inheritIO();
+                Process p = proc.start();
+                p.waitFor();
+                System.out.println(getOutput(p));
+            } catch (InterruptedException ex) {
+                System.err.println("solve: Interrupted exception.");
+                return false;
+            } catch (IOException ex) {
+                System.err.println("solve: IO exception occured.");
+                return false;
+            }
+            return true;
         }
+        return false;
     }
 
-    private String getOutput(Process process){
-        try (BufferedReader read = new BufferedReader(new InputStreamReader(process.getInputStream()))){            
+    private String getOutput(Process process) {
+        try (BufferedReader read = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             StringBuilder sb = new StringBuilder();
             String line = null;
             while ((line = read.readLine()) != null) {
@@ -45,7 +51,7 @@ public class SolveCommand implements Command {
             return sb.toString();
         } catch (IOException e) {
             System.err.println("solve: Cant get output from process.");
-        }   
+        }
         return null;
     }
 }

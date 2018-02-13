@@ -18,7 +18,7 @@ public class RandomSystemCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 5, "random")
                 && Utils.checkTypeOfArguments(arguments, "random")) {
@@ -29,7 +29,9 @@ public class RandomSystemCommand implements Command {
                     Integer.parseInt(args.get(3)),
                     Integer.parseInt(args.get(4))
             );
+            return true;
         }
+        return false;
     }
 
 }

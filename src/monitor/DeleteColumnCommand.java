@@ -18,13 +18,14 @@ public class DeleteColumnCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 2, "deletecol")
                 && Utils.checkTypeOfArguments(arguments, "deletecol")
                 && Utils.checkIsSystemLoaded(system, "deletecol")) {
-            system.deleteCol(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
+            return system.deleteCol(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
         }
+        return false;
     }
 
 }

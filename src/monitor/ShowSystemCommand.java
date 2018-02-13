@@ -17,11 +17,13 @@ public class ShowSystemCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         if (Utils.checkNumberOfArguments(arguments, 0, "show")
                 && Utils.checkIsSystemLoaded(system, "show")) {
             System.out.println(system.toString());
+            return true;
         }
+        return false;
     }
 
 }

@@ -27,14 +27,15 @@ public class PermuteBlocksCommand implements Command {
     }
     // TODO PERM FILE
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (checkNumberOfArguments() && Utils.checkIsSystemLoaded(system, "permutateblocks")) {
             if(args.size() == 1){
-                system.permutateBlocks(args.get(0));
+                return system.permutateBlocks(args.get(0));
             }else{
-                system.permutateBlocks();
+                return system.permutateBlocks();
             }
         }
+        return false;        
     }
 }

@@ -18,12 +18,13 @@ public class AddColumnCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 3, "addcol")
                 && Utils.checkTypeOfArguments(arguments, "addcol")
                 && Utils.checkIsSystemLoaded(system, "addcol")) {
-            system.addCol(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)), Integer.parseInt(args.get(2)));
+            return system.addCol(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)), Integer.parseInt(args.get(2)));
         }
+        return false;
     }
 }

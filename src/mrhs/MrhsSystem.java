@@ -100,24 +100,28 @@ public class MrhsSystem {
      * @param i i-th block to swap
      * @param j j-th block to swap
      */
-    public void swapBlocks(int i, int j) {
+    public boolean swapBlocks(int i, int j) {
         i = Math.floorMod(i, system.size());
         j = Math.floorMod(j, system.size());
         Collections.swap(system, i, j);
+        return true;
     }
 
-    public void deleteBlock(int i) {
+    public boolean deleteBlock(int i) {
         if (Utils.checkBlocksBounds(this, "deleteblock", i)) {
             system.remove(i);
             nBlocks--;
+            return true;
         }
+        return false;
     }
 
-    public void permutateBlocks() {
+    public boolean permutateBlocks() {
         Collections.shuffle(system);
+        return true;
     }
 
-    public void permutateBlocks(String permutationFileName) {
+    public boolean permutateBlocks(String permutationFileName) {
         MrhsReader read = new MrhsReader();
         List<Integer> permutation = read.readPermutationFromFile(permutationFileName);
         if (permutation != null && Utils.checkPermutation(this, permutation, "permutateblocks")) {
@@ -127,7 +131,9 @@ public class MrhsSystem {
                 ordering.put(eq, i);
             }
             Collections.sort(system, new MrhsEquationComparator(ordering));
+            return true;
         }
+        return false;
     }
 
     /**
@@ -136,7 +142,7 @@ public class MrhsSystem {
      * @param to
      * @param toAdd
      */
-    public void addRow(int to, int toAdd) {
+    public boolean addRow(int to, int toAdd) {
         if (Utils.checkRowsBounds(this, "addrow", to, toAdd)) {
             for (int i = 0; i < system.size(); i++) {
                 for (int j = 0; j < system.get(i).getLeftSide().get(0).size(); j++) {
@@ -145,7 +151,9 @@ public class MrhsSystem {
                     system.get(i).getLeftSide().get(to).set(j, valueTo ^ valueToAdd);
                 }
             }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -154,47 +162,54 @@ public class MrhsSystem {
      * @param i i-th row
      * @param j j-th row
      */
-    public void swapRows(int i, int j) {
+    public boolean swapRows(int i, int j) {
         if (Utils.checkRowsBounds(this, "swaprow", i, j)) {
             for (int k = 0; k < nBlocks; k++) {
                 Collections.swap(system.get(k).getLeftSide(), i, j);
             }
+            return true;
         }
+        return false;
     }
 
-    public void deleteRow(int i) {
+    public boolean deleteRow(int i) {
         if (Utils.checkRowsBounds(this, "deleterow", i)) {
             for (MrhsEquation e : system) {
                 e.getLeftSide().remove(i);
                 e.setnRows(e.getnRows() - 1);
             }
             nRows--;
+            return true;
         }
+        return false;
     }
 
-    public void swapCols(int iB, int i, int j) {
+    public boolean swapCols(int iB, int i, int j) {
         if (Utils.checkBlocksBounds(this, "swapcols", iB)) {
-            system.get(iB).swapCols(i, j);
+            return system.get(iB).swapCols(i, j);            
         }
+        return false;
     }
 
-    public void addCol(int iB, int i, int j) {
+    public boolean addCol(int iB, int i, int j) {
         if (Utils.checkBlocksBounds(this, "addcol", iB)) {
-            system.get(iB).addCol(i, j);
+            return system.get(iB).addCol(i, j);
         }
+        return false;
     }
 
-    public void deleteCol(int iB, int i) {
+    public boolean deleteCol(int iB, int i) {
         if (Utils.checkBlocksBounds(this, "deletecol", iB)) {
-            system.get(iB).deleteCol(i);
+            return system.get(iB).deleteCol(i);
         }
+        return false;
     }
 
-    public void glue(int iB, int jB, int keepOld) {        
+    public boolean glue(int iB, int jB, int keepOld) {        
         iB = Math.floorMod(iB, system.size());        
         jB = Math.floorMod(jB, system.size());
         if(iB == jB){
-            return;
+            return false;
         }
         MrhsEquation glued = createGluedBlock(iB, jB);        
         if (keepOld > 0) {
@@ -215,6 +230,7 @@ public class MrhsSystem {
             }
             nBlocks--;
         }
+        return true;
     }
 
     private MrhsEquation createGluedBlock(int iB, int jB) {
@@ -282,10 +298,12 @@ public class MrhsSystem {
         return result;
     }
 
-    public void normalize(int i) {
+    public boolean normalize(int i) {
         if (Utils.checkBlocksBounds(this, "normalize", i)) {
             system.get(i).normalize();
+            return true;
         }
+        return false;
     }
 
     private int nCols() {
@@ -438,7 +456,7 @@ public class MrhsSystem {
             return;
         }
         for(int i = 0; i < system.size(); i++){
-            System.err.println("Equation " + i + " rows " + system.get(i).getnRows() + " cols " + system.get(i).getRightSide().size()+ " rhs " + system.get(i).getnRHS());
+            System.err.println("Equation " + i + " rows " + system.get(i).getnRows() + " cols " + system.get(i).getnCols() + " rhs " + system.get(i).getnRHS());
         }
     }
 

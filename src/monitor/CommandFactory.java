@@ -19,15 +19,15 @@ public class CommandFactory {
         commands.put("permuteblocks", new PermuteBlocksCommand(system, args));
         commands.put("glue", new GlueCommand(system, args));
         commands.put("normalize", new NormalizeEquationCommand(system, args));
-        
+
         commands.put("addrow", new AddRowCommand(system, args));
         commands.put("swaprows", new SwapRowsCommand(system, args));
         commands.put("deleterow", new DeleteRowCommand(system, args));
-        
+
         commands.put("addcol", new AddColumnCommand(system, args));
-        commands.put("swapcols", new SwapColumnsCommand(system, args));        
+        commands.put("swapcols", new SwapColumnsCommand(system, args));
         commands.put("deletecol", new DeleteColumnCommand(system, args));
-        
+
         commands.put("random", new RandomSystemCommand(system, args));
         commands.put("info", new InfoAboutSystemCommand(system, args));
         commands.put("show", new ShowSystemCommand(system, args));
@@ -39,12 +39,12 @@ public class CommandFactory {
         commands.put("echo", new EchoCommand(args));
     }
 
-    public void getAndExecuteCommand(String commandName) {
+    public boolean getAndExecuteCommand(String commandName) {
         if (commands.containsKey(commandName)) {
-            commands.get(commandName).execute();
-            return;
+            return commands.get(commandName).execute();            
         }
         System.err.println("Command not found. For list of commands type \"help\"");
+        return false;
     }
 
 }

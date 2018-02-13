@@ -29,15 +29,16 @@ public class LoadSystemCommand implements Command{
     }
     
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if(checkNumberOfArguments()){
             MrhsReader read = new MrhsReader();
             if(args.isEmpty()){                
-                read.readFromFile(null, system);
+                return read.readFromFile(null, system);
             }else{
-                read.readFromFile(args.get(0), system);
+                return read.readFromFile(args.get(0), system);
             }
         }
+        return false;
     }
 }

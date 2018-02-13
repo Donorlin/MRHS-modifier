@@ -16,11 +16,13 @@ public class InfoAboutSystemCommand implements Command{
     }
     
     @Override
-    public void execute() {
+    public boolean execute() {
         if(Utils.checkNumberOfArguments(arguments, 0, "info") 
                 && Utils.checkIsSystemLoaded(system, "info")){
             system.infoSystem();
+            return true;
         }
+        return false;
     }
 
 }

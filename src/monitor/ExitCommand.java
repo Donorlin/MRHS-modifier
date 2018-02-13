@@ -13,10 +13,11 @@ public class ExitCommand implements Command{
     }
     
     @Override
-    public void execute() {
+    public boolean execute() {
         if(Utils.checkNumberOfArguments(arguments, 0, "exit")){
             System.exit(0);            
         }
+        return false;
     }
 
 }

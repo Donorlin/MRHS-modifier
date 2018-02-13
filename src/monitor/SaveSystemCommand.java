@@ -30,16 +30,17 @@ public class SaveSystemCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (checkNumberOfArguments() && Utils.checkIsSystemLoaded(system, "save")) {
             MrhsWriter write = new MrhsWriter();
             if (args.isEmpty()) {
-                write.writeToFile(null, system);
+                return write.writeToFile(null, system);
             } else {
-                write.writeToFile(new File(args.get(0)), system);
+                return write.writeToFile(new File(args.get(0)), system);
             }
         }
+        return false;
     }
 
 }

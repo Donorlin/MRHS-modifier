@@ -18,12 +18,13 @@ public class DeleteBlockCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 1, "deleteblock")
                 && Utils.checkTypeOfArguments(arguments, "deleteblock")
                 && Utils.checkIsSystemLoaded(system, "deleteblock")) {
-            system.deleteBlock(Integer.parseInt(args.get(0)));
+            return system.deleteBlock(Integer.parseInt(args.get(0)));
         }
+        return false;
     }
 }

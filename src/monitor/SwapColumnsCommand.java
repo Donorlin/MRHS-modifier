@@ -18,13 +18,14 @@ public class SwapColumnsCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 3, "swapcols")
                 && Utils.checkTypeOfArguments(arguments, "swapcols")
                 && Utils.checkIsSystemLoaded(system, "swapcols")) {
-            system.swapCols(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)), Integer.parseInt(args.get(2)));
+            return system.swapCols(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)), Integer.parseInt(args.get(2)));
         }
+        return false;
     }
 
 }

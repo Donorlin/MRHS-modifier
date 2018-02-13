@@ -114,7 +114,7 @@ public class MrhsEquation {
         return true;
     }
 
-    protected void swapCols(int i, int j) {
+    protected boolean swapCols(int i, int j) {
         if (Utils.checkColumnsBounds(this, "swapcols", i, j)) {
             for (ArrayList<Integer> l : rightSide) {
                 Collections.swap(l, i, j);
@@ -122,10 +122,12 @@ public class MrhsEquation {
             for (ArrayList<Integer> l : leftSide) {
                 Collections.swap(l, i, j);
             }
+            return true;
         }
+        return false;
     }
 
-    protected void addCol(int to, int toAdd) {
+    protected boolean addCol(int to, int toAdd) {
         if (Utils.checkColumnsBounds(this, "addcols", to, toAdd)) {
             for (ArrayList<Integer> l : leftSide) {
                 int valueTo = l.get(to);
@@ -137,10 +139,12 @@ public class MrhsEquation {
                 int valueToAdd = r.get(toAdd);
                 r.set(to, valueTo ^ valueToAdd);
             }
+            return true;
         }
+        return false;
     }
 
-    protected void deleteCol(int i) {
+    protected boolean deleteCol(int i) {
         if (Utils.checkColumnsBounds(this, "deletecol", i)) {
             for (ArrayList<Integer> l : leftSide) {
                 l.remove(i);
@@ -149,7 +153,9 @@ public class MrhsEquation {
                 r.remove(i);
             }
             nCols--;
+            return true;
         }
+        return false;
     }
 
     private int findPivot(int fromCol, int inRow) {

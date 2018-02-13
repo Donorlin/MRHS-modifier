@@ -24,7 +24,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (checkNumberOfArguments()) {
             if (args.isEmpty()) {
@@ -87,9 +87,12 @@ public class HelpCommand implements Command {
                         break;
                     default:
                         System.err.println("Command " + args.get(0) + " not recognized.");
+                        return false;
                 }
             }
+            return true;
         }
+        return false;
     }
 
     private void printListOfCommands() {

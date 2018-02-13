@@ -18,12 +18,13 @@ public class AddRowCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 2, "addrow")
                 && Utils.checkTypeOfArguments(arguments, "addrow")
                 && Utils.checkIsSystemLoaded(system, "addrow")) {
-            system.addRow(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
+            return system.addRow(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
         }
+        return false;
     }
 }

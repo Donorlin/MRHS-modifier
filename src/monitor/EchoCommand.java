@@ -15,11 +15,15 @@ public class EchoCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
+        if(args.isEmpty()){
+            return false;
+        }
         for(String echo: args){
             System.err.print(echo + " ");
         }
         System.err.println("");
+        return true;
     }
 }

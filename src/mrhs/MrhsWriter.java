@@ -52,7 +52,6 @@ public class MrhsWriter {
                 System.err.println("writeToFile: Can't write to file.");
             }
         }
-
         return false;
     }
 }

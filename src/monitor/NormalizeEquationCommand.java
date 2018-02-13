@@ -18,13 +18,15 @@ public class NormalizeEquationCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<String> args = arguments.getArguments();
         if (Utils.checkNumberOfArguments(arguments, 1, "normalize")
                 && Utils.checkTypeOfArguments(arguments, "normalize")
                 && Utils.checkIsSystemLoaded(system, "normalize")) {
             system.normalize(Integer.parseInt(args.get(0)));
+            return true;
         }
+        return false;
     }
 
 }

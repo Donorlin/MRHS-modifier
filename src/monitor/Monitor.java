@@ -30,6 +30,7 @@ public class Monitor {
 
     public void console() {
         Scanner scan = new Scanner(System.in);
+        Integer counter = 1;
         System.err.println("Welcome in MRHS MODIFIER v" + VERSION);
         System.err.println("For list of commands type \"help\"");
         while (true) {
@@ -39,7 +40,12 @@ public class Monitor {
             String commandName = parsedInputFromConsole.get(0);
             parsedInputFromConsole.remove(0);
             arguments.setArguments(parsedInputFromConsole);
-            commands.getAndExecuteCommand(commandName);
+            if(commands.getAndExecuteCommand(commandName)){
+                System.err.println(counter + ": " + inputFromConsole + " DONE");
+            }else{
+                System.err.println(counter + ": " + inputFromConsole + " FAILED");
+            }
+            counter += 1;
         }
     }
 }
