@@ -7,10 +7,10 @@ import java.util.Map;
  *
  * @author Daniel Jahodka
  */
-public class MrhsEquationComparator implements Comparator<MrhsEquation>{
+public class MrhsEquationIndexComparator implements Comparator<MrhsEquation>{
 
     private Map<MrhsEquation, Integer> sortOrder;
-    protected MrhsEquationComparator(Map<MrhsEquation, Integer> sortOrder){
+    protected MrhsEquationIndexComparator(Map<MrhsEquation, Integer> sortOrder){
         this.sortOrder = sortOrder;
     }
     

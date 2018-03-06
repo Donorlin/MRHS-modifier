@@ -85,6 +85,9 @@ public class HelpCommand implements Command {
                     case "normalize":
                         helpNormalize();
                         break;
+                    case "build":
+                        helpBuild();
+                        break;
                     default:
                         System.err.println("Command " + args.get(0) + " not recognized.");
                         return false;
@@ -199,5 +202,9 @@ public class HelpCommand implements Command {
 
     private void helpNormalize() {
 
+    }
+    
+    private void helpBuild(){
+        
     }
 }

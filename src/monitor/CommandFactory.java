@@ -37,6 +37,10 @@ public class CommandFactory {
         commands.put("help", new HelpCommand(args));
         commands.put("solve", new SolveCommand(system, args));
         commands.put("echo", new EchoCommand(args));
+        
+        
+        
+        commands.put("build", new BuildCommand(system,args));
     }
 
     public boolean getAndExecuteCommand(String commandName) {

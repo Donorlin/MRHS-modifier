@@ -113,39 +113,46 @@ public class MrhsReader {
             for (int j = 0; j < system.getSystem().get(i).getnRHS(); j++) {
                 ArrayList<Integer> list = new ArrayList<>();
                 tmp = scan.next();
+                if (system.getSystem().get(i).getnCols() == 1) {
+                    list.add(Integer.parseInt(Character.toString(tmp.charAt(1))));
+                    if (!system.getSystem().get(i).containsRhs(list)) {
+                        system.getSystem().get(i).getRightSide().add(list);
+                    }
+                    continue;
+                }
                 list.add(Integer.parseInt(tmp.substring(1, 2)));
                 for (int k = 1; k < system.getSystem().get(i).getnCols() - 1; k++) {
                     list.add(scan.nextInt());
                 }
                 tmp = scan.next();
                 list.add(Integer.parseInt(tmp.substring(0, 1)));
-                if(!system.getSystem().get(i).containsRhs(list)){
+                if (!system.getSystem().get(i).containsRhs(list)) {
                     system.getSystem().get(i).getRightSide().add(list);
-                }        
+                }
             }
         }
     }
-    
-    public List<Integer> readPermutationFromFile(String fileName){
+
+    public List<Integer> readPermutationFromFile(String fileName) {
         List<Integer> permutation = null;
         File file = new File(fileName);
-        
-        try(Scanner scan = new Scanner(file)){
+
+        try (Scanner scan = new Scanner(file)) {
             String line = scan.nextLine();
             permutation = strToIntList(Arrays.asList(line.split(" ")));
-        }catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.err.println("File not found.");
-        }       
-        
+        }
+
         return permutation;
     }
-    
-    private List<Integer> strToIntList(List<String> list){
+
+    private List<Integer> strToIntList(List<String> list) {
         List<Integer> result = new ArrayList<>();
-        for(String s : list){
+        for (String s : list) {
             result.add(Integer.parseInt(s));
-        }        
+        }
         return result;
     }
-    
+
 }

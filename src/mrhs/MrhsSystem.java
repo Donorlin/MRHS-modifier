@@ -13,14 +13,14 @@ import java.util.Random;
  */
 public class MrhsSystem {
 
-    private boolean isSystemLoaded;
-
     private int nRows;
     private int nBlocks;
     private ArrayList<MrhsEquation> system;
+    private boolean isSystemLoaded;
 
     public MrhsSystem() {
         isSystemLoaded = false;
+        system = new ArrayList<>();
     }
 
     protected void setnRows(int nRows) {
@@ -130,7 +130,7 @@ public class MrhsSystem {
                 MrhsEquation eq = system.get(permutation.get(i));
                 ordering.put(eq, i);
             }
-            Collections.sort(system, new MrhsEquationComparator(ordering));
+            Collections.sort(system, new MrhsEquationIndexComparator(ordering));
             return true;
         }
         return false;
@@ -143,7 +143,7 @@ public class MrhsSystem {
      * @param toAdd
      */
     public boolean addRow(int to, int toAdd) {
-        if (Utils.checkRowsBounds(this, "addrow", to, toAdd)) {
+        if (Utils.checkRowsBounds(this, "addrow", to, toAdd) && (to != toAdd)) {
             for (int i = 0; i < system.size(); i++) {
                 for (int j = 0; j < system.get(i).getLeftSide().get(0).size(); j++) {
                     int valueTo = system.get(i).getLeftSide().get(to).get(j);
@@ -186,14 +186,14 @@ public class MrhsSystem {
 
     public boolean swapCols(int iB, int i, int j) {
         if (Utils.checkBlocksBounds(this, "swapcols", iB)) {
-            return system.get(iB).swapCols(i, j);            
+            return system.get(iB).swapCols(i, j);
         }
         return false;
     }
 
-    public boolean addCol(int iB, int i, int j) {
-        if (Utils.checkBlocksBounds(this, "addcol", iB)) {
-            return system.get(iB).addCol(i, j);
+    public boolean addCol(int iB, int to, int toAdd) {
+        if (Utils.checkBlocksBounds(this, "addcol", iB) && (to != toAdd)) {
+            return system.get(iB).addCol(to, toAdd);
         }
         return false;
     }
@@ -205,13 +205,13 @@ public class MrhsSystem {
         return false;
     }
 
-    public boolean glue(int iB, int jB, int keepOld) {        
-        iB = Math.floorMod(iB, system.size());        
+    public boolean glue(int iB, int jB, int keepOld) {
+        iB = Math.floorMod(iB, system.size());
         jB = Math.floorMod(jB, system.size());
-        if(iB == jB){
+        if (iB == jB) {
             return false;
         }
-        MrhsEquation glued = createGluedBlock(iB, jB);        
+        MrhsEquation glued = createGluedBlock(iB, jB);
         if (keepOld > 0) {
             system.add(glued);
             nBlocks++;
@@ -242,14 +242,14 @@ public class MrhsSystem {
         glued.setRightSide(createGluedRightHandSides(iB, jB));
         glued.setnRHS(glued.getRightSide().size());
         glued.normalize();
-        
+
         return glued;
     }
 
     private ArrayList<ArrayList<Integer>> createGluedLeftHandSide(int iB, int jB) {
         ArrayList<ArrayList<Integer>> newLeftSide = cloneHandValues(system.get(iB).getLeftSide());
         ArrayList<ArrayList<Integer>> leftSideOfJ = cloneHandValues(system.get(jB).getLeftSide());
-        
+
         for (int i = 0; i < leftSideOfJ.size(); i++) {
             ArrayList<Integer> rowFromLeftSideOfJ = leftSideOfJ.get(i);
             newLeftSide.get(i).addAll(rowFromLeftSideOfJ);
@@ -342,30 +342,36 @@ public class MrhsSystem {
         int nPivots = 0;
         int lead = 0;
         int i;
+        MrhsSystem sys = Utils.copySystemValues(this);
 
-        for (int r = 0; r < nRows; r++) {
-            if (nCols() <= lead) {
+        for (int r = 0; r < sys.getnRows(); r++) {
+            if (sys.nCols() <= lead) {
                 return nPivots;
             } else {
                 i = r;
             }
             int pivot = -1;
-            while ((pivot = findPivot(i, lead)) == -1) {
+            while ((pivot = sys.findPivot(i, lead)) == -1) {
                 lead++;
-                if (nCols() == lead) {
+                if (sys.nCols() == lead) {
                     return nPivots;
                 }
             }
             nPivots++;
-            swapRows(r, pivot);
-            for (int j = 0; j < nRows; j++) {
-                if (j != r && (system.get(colToBlockNumber(lead)).getLeftSide().get(j).get(colToRealCol(lead)) == 1)) {
-                    addRow(j, r);
+            sys.swapRows(r, pivot);
+            for (int j = 0; j < sys.getnRows(); j++) {
+                if (j != r && (sys.getSystem().get(sys.colToBlockNumber(lead)).getLeftSide().get(j).get(sys.colToRealCol(lead)) == 1)) {
+                    sys.addRow(j, r);
                 }
             }
             lead++;
         }
         return nPivots;
+    }
+
+    protected void addBlock(MrhsEquation equation) {
+        system.add(equation);
+        nBlocks++;
     }
 
     @Override
@@ -446,42 +452,77 @@ public class MrhsSystem {
             for (ArrayList<Integer> rs : e.getRightSide()) {
                 sb.append(rs + newLineChar);
             }
+            sb.append(newLineChar);
         }
         return sb.toString().replaceAll("[^0-9-\\[\\] \\n]", "");
     }
 
-    public void infoSystem() {  
-        if(!checkSizes()){
+    public void infoSystem() {
+        if (!checkSizes()) {
             System.err.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
             return;
         }
-        for(int i = 0; i < system.size(); i++){
+        for (int i = 0; i < system.size(); i++) {
             System.err.println("Equation " + i + " rows " + system.get(i).getnRows() + " cols " + system.get(i).getnCols() + " rhs " + system.get(i).getnRHS());
         }
     }
 
-    public void generateRandomSystem(int nRows, int nBlocks, int nCols, int nRHS, int randomRange) {
+    public boolean generateRandomSystem(int nRows, int nBlocks, int nCols, int nRHS, int randomRange, double density) {
         Random rand = new Random(System.currentTimeMillis());
         this.nRows = nRows;
         this.nBlocks = nBlocks;
         system = new ArrayList<>(nBlocks);
+
+        if (density <= 0 || density >= 1) {
+            System.err.println("random: Density is not value between (0,1)");
+            return false;
+        }
+        if (nRows == 0 || nBlocks == 0 || nCols == 0 || nRHS == 0) {
+            System.err.println("random: Number of equations, rows, columns and number of right-hand sides should be nonzero value.");
+            return false;
+        }
+
         while (system.size() != nBlocks) {
+            int newnCols = nCols;
+            int newnRHS = nRHS;
             MrhsEquation eq = new MrhsEquation();
             eq.setnRows(nRows);
 
             if (randomRange >= 1) {
-                nCols = rand.nextInt(nCols) + 1;
-                nRHS = rand.nextInt(nRHS) + 1;
+                newnCols = rand.nextInt(nCols) + 1;
+                newnRHS = rand.nextInt(nRHS) + 1;
+                if (Utils.factorial(newnCols) < newnRHS) {
+                    newnRHS = Utils.factorial(newnCols);
+                }
             }
-            eq.setnCols(nCols);
-            eq.generateRandomLeftSide(rand, nRows, nCols);
-            eq.setnRHS(nRHS);            
-            eq.generateRandomRightSides(rand, nRHS, nCols);
-            if(eq.normalize() == nRHS){
+
+            eq.setnCols(newnCols);
+            eq.generateRandomLeftSide(rand, nRows, newnCols, density);
+            eq.setnRHS(newnRHS);
+            eq.generateRandomRightSides(rand, newnRHS, newnCols);
+            if (eq.normalize() == newnRHS) {
                 system.add(eq);
-            }      
+            }
+
         }
+//        int nula = 0;
+//        int jedna = 0;
+//        for (MrhsEquation eq : system) {
+//            for (ArrayList<Integer> lhs : eq.getLeftSide()) {
+//                for (Integer i : lhs) {
+//                    if (i == 0) {
+//                        nula++;
+//                    } else {
+//                        jedna++;
+//                    }
+//                }
+//            }
+//        }
+//        System.out.println(density);
+//        System.out.println("Nula= " + nula + " jedna= " + jedna + " celok= " + (nBlocks * nCols * nRows));
+
         isSystemLoaded = true;
+        return true;
     }
 
 }

@@ -62,4 +62,61 @@ public class Utils {
         return true;
     }
 
+    protected static ArrayList<MrhsEquation> copyEquationsValues(ArrayList<MrhsEquation> equations) {
+        ArrayList<MrhsEquation> result = new ArrayList<>();
+        for (MrhsEquation eq : equations) {
+            MrhsEquation copyEq = copyEquationValue(eq);
+            result.add(copyEq);
+        }
+        return result;
+    }
+
+    protected static MrhsEquation copyEquationValue(MrhsEquation equation) {
+        MrhsEquation copyEq = new MrhsEquation();
+
+        copyEq.setnRows(equation.getnRows());
+        copyEq.setnCols(equation.getnCols());
+        copyEq.setnRHS(equation.getnRHS());
+
+        ArrayList<ArrayList<Integer>> copyLhs = copyHandValues(equation.getLeftSide());
+        copyEq.setLeftSide(copyLhs);
+        ArrayList<ArrayList<Integer>> copyRhs = copyHandValues(equation.getRightSide());
+        copyEq.setRightSide(copyRhs);
+
+        return copyEq;
+    }
+
+    protected static ArrayList<ArrayList<Integer>> copyHandValues(ArrayList<ArrayList<Integer>> hand) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>(hand.size());
+        for (ArrayList<Integer> row : hand) {
+            ArrayList<Integer> copyRow = new ArrayList<>();
+            for (Integer val : row) {
+                copyRow.add(val);
+            }
+            result.add(copyRow);
+        }
+        return result;
+    }
+
+    protected static MrhsSystem copySystemValues(MrhsSystem system){
+        MrhsSystem result = new MrhsSystem();
+        
+        result.setnBlocks(system.getnBlocks());
+        result.setnRows(system.getnRows());
+        result.setIsSystemLoaded(system.isSystemLoaded());
+        
+        ArrayList<MrhsEquation> equations = copyEquationsValues(system.getSystem());
+        result.setSystem(equations);
+        
+        return result;
+    }
+    
+    protected static Integer factorial(int n){
+        Integer result = 1;
+        for(int i = 1; i <= n; i++){
+            result = result * i;
+        }
+        return result;
+    }
+    
 }

@@ -14,15 +14,79 @@ public class MrhsEquation {
     private int nRows;
     private int nCols;
     private int nRHS;
+    private Double g;
+    private Integer p;
     private ArrayList<ArrayList<Integer>> leftSide;
     private ArrayList<ArrayList<Integer>> rightSide;
+        
+    protected void setnRHS(int nRHS) {
+        this.nRHS = nRHS;
+    }
 
-    protected void generateRandomLeftSide(Random rand, int nRows, int nCols) {
+    protected void setnCols(int nCols) {
+        this.nCols = nCols;
+    }
+
+    protected void setnRows(int nRows) {
+        this.nRows = nRows;
+    }
+
+    protected void setG(Double g){
+        this.g = g;
+    }
+    
+    protected void setP(Integer p){
+        this.p = p;
+    }
+    
+    protected void setRightSide(ArrayList<ArrayList<Integer>> leftSide) {
+        this.rightSide = leftSide;
+    }
+
+    protected void setLeftSide(ArrayList<ArrayList<Integer>> rightSide) {
+        this.leftSide = rightSide;
+    }
+
+    protected int getnRows() {
+        return nRows;
+    }
+
+    protected int getnCols() {
+        return nCols;
+    }
+
+    protected int getnRHS() {
+        return nRHS;
+    }
+
+    public Double getG() {
+        return g;
+    }
+
+    public Integer getP() {
+        return p;
+    }    
+    
+    protected ArrayList<ArrayList<Integer>> getLeftSide() {
+        return leftSide;
+    }
+
+    protected ArrayList<ArrayList<Integer>> getRightSide() {
+        return rightSide;
+    }
+
+    
+    protected void generateRandomLeftSide(Random rand, int nRows, int nCols, double density) {
         leftSide = new ArrayList<>();
         for (int j = 0; j < nRows; j++) {
             ArrayList<Integer> l = new ArrayList<>();
-            for (int k = 0; k < nCols; k++) {
-                l.add(rand.nextInt(2));
+            for (int k = 0; k < nCols; k++) {                
+                double den = rand.nextDouble();
+                if(den <= density){
+                    l.add(1);
+                }else{
+                    l.add(0);
+                }
             }
             leftSide.add(l);
         }
@@ -45,46 +109,6 @@ public class MrhsEquation {
         return rightSide.contains(rhs);
     }
     
-    protected void setnRHS(int nRHS) {
-        this.nRHS = nRHS;
-    }
-
-    protected void setnCols(int nCols) {
-        this.nCols = nCols;
-    }
-
-    protected void setnRows(int nRows) {
-        this.nRows = nRows;
-    }
-
-    protected void setRightSide(ArrayList<ArrayList<Integer>> leftSide) {
-        this.rightSide = leftSide;
-    }
-
-    protected void setLeftSide(ArrayList<ArrayList<Integer>> rightSide) {
-        this.leftSide = rightSide;
-    }
-
-    protected int getnRows() {
-        return nRows;
-    }
-
-    protected int getnCols() {
-        return nCols;
-    }
-
-    protected int getnRHS() {
-        return nRHS;
-    }
-
-    protected ArrayList<ArrayList<Integer>> getLeftSide() {
-        return leftSide;
-    }
-
-    protected ArrayList<ArrayList<Integer>> getRightSide() {
-        return rightSide;
-    }
-
     protected boolean checkSizes() {
         if (nRHS != rightSide.size()) {
             nRHS = rightSide.size();
@@ -128,7 +152,7 @@ public class MrhsEquation {
     }
 
     protected boolean addCol(int to, int toAdd) {
-        if (Utils.checkColumnsBounds(this, "addcols", to, toAdd)) {
+        if (Utils.checkColumnsBounds(this, "addcols", to, toAdd) && (to != toAdd)) {
             for (ArrayList<Integer> l : leftSide) {
                 int valueTo = l.get(to);
                 int valueToAdd = l.get(toAdd);
@@ -226,5 +250,42 @@ public class MrhsEquation {
         }
         return true;
     }
+    
+    protected int deleteZeroColumns(){
+        for(int i = 0; i < nCols; i++){
+            if(isZeroColumn(i)){
+                if(deleteCol(i)){
+                    i--;
+                }                
+            }
+        }
+        return nCols;
+    }
+
+    @Override
+    public String toString() {
+        String newLineChar = System.getProperty("line.separator");
+        StringBuilder sb = new StringBuilder();
+        sb.append(newLineChar);
+        for(ArrayList<Integer> row : leftSide){
+            for(Integer i : row){
+                sb.append(i + " ");
+            }
+            sb.append(newLineChar);
+        }
+        for(int i = 0; i < nCols; i++){
+            sb.append("-");
+        }
+        for(ArrayList<Integer> row : rightSide){
+            for(Integer i : row){
+                sb.append(i + " ");
+            }
+            sb.append(newLineChar);
+        }
+        return sb.toString();
+    }
+    
+    
+    
     
 }
