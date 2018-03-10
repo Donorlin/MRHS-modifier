@@ -15,7 +15,7 @@ public class MrhsSystem {
 
     private int nRows;
     private int nBlocks;
-    private ArrayList<MrhsEquation> system;
+    private List<MrhsEquation> system;
     private boolean isSystemLoaded;
 
     public MrhsSystem() {
@@ -31,7 +31,7 @@ public class MrhsSystem {
         this.nBlocks = nBlocks;
     }
 
-    protected void setSystem(ArrayList<MrhsEquation> system) {
+    protected void setSystem(List<MrhsEquation> system) {
         this.system = system;
     }
 
@@ -47,7 +47,7 @@ public class MrhsSystem {
         return nBlocks;
     }
 
-    public ArrayList<MrhsEquation> getSystem() {
+    public List<MrhsEquation> getSystem() {
         return system;
     }
 
@@ -204,14 +204,36 @@ public class MrhsSystem {
         }
         return false;
     }
+    
+    // TODO COMMAND
+    public boolean deleteZeroColumns(){
+        for(MrhsEquation eq : system){
+            eq.deleteZeroColumns();
+        }       
+        
+        return true;
+    }
 
     public boolean glue(int iB, int jB, int keepOld) {
         iB = Math.floorMod(iB, system.size());
         jB = Math.floorMod(jB, system.size());
+        
+        if(!(keepOld == 0 || keepOld == 1)){
+            System.err.println("glue: keepOld should be 0 (false) or 1 (true)");
+            return false;
+        }
         if (iB == jB) {
             return false;
         }
         MrhsEquation glued = createGluedBlock(iB, jB);
+        if(glued.getnRHS() == 0){
+            if(keepOld == 1){
+                System.err.println("glue: Glued block has zero right-hand sides. Not adding it.");
+            }else{
+                System.err.println("glue: Glued block has zero right-hand sides. Not replacing old blocks.");
+            }            
+            return false;
+        }
         if (keepOld > 0) {
             system.add(glued);
             nBlocks++;
@@ -239,52 +261,59 @@ public class MrhsSystem {
         glued.setnRows(nRows);
         glued.setnCols(system.get(iB).getnCols() + system.get(jB).getnCols());
         glued.setLeftSide(createGluedLeftHandSide(iB, jB));
-        glued.setRightSide(createGluedRightHandSides(iB, jB));
-        glued.setnRHS(glued.getRightSide().size());
+        glued.setRightSides(createGluedRightHandSides(iB, jB));
+        glued.setnRHS(glued.getRightSides().size());
         glued.normalize();
 
         return glued;
     }
 
-    private ArrayList<ArrayList<Integer>> createGluedLeftHandSide(int iB, int jB) {
-        ArrayList<ArrayList<Integer>> newLeftSide = cloneHandValues(system.get(iB).getLeftSide());
-        ArrayList<ArrayList<Integer>> leftSideOfJ = cloneHandValues(system.get(jB).getLeftSide());
+    private List<List<Integer>> createGluedLeftHandSide(int iB, int jB) {
+        List<List<Integer>> newLeftSide = Utils.copyHandValues(system.get(iB).getLeftSide());
+        List<List<Integer>> leftSideOfJ = Utils.copyHandValues(system.get(jB).getLeftSide());
 
         for (int i = 0; i < leftSideOfJ.size(); i++) {
-            ArrayList<Integer> rowFromLeftSideOfJ = leftSideOfJ.get(i);
+            List<Integer> rowFromLeftSideOfJ = leftSideOfJ.get(i);
             newLeftSide.get(i).addAll(rowFromLeftSideOfJ);
         }
+        
         return newLeftSide;
     }
 
-    private ArrayList<ArrayList<Integer>> createGluedRightHandSides(int iB, int jB) {
-        ArrayList<ArrayList<Integer>> newRightSides = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> rightSidesOfI = cloneHandValues(system.get(iB).getRightSide());
-        ArrayList<ArrayList<Integer>> rightSidesOfJ = cloneHandValues(system.get(jB).getRightSide());
-
-        for (ArrayList<Integer> rhsI : rightSidesOfI) {
-            for (ArrayList<Integer> rhsJ : rightSidesOfJ) {
-                ArrayList<Integer> newRhs = new ArrayList<>();
+    private List<List<Integer>> createGluedRightHandSides(int iB, int jB) {
+        List<List<Integer>> newRightSides = new ArrayList<>();      
+        List<List<Integer>> rightSidesOfI = Utils.copyHandValues(system.get(iB).getRightSides());
+        List<List<Integer>> rightSidesOfJ = Utils.copyHandValues(system.get(jB).getRightSides());
+        
+        for (List<Integer> rhsI : rightSidesOfI) {
+            for (List<Integer> rhsJ : rightSidesOfJ) {
+                List<Integer> newRhs = new ArrayList<>();
                 newRhs.addAll(rhsI);
                 newRhs.addAll(rhsJ);
                 newRightSides.add(newRhs);
             }
         }
+                
         return newRightSides;
     }
-
-    private ArrayList<ArrayList<Integer>> cloneHandValues(ArrayList<ArrayList<Integer>> lhs) {
-        ArrayList<ArrayList<Integer>> clone = new ArrayList<>(lhs.size());
-        for (ArrayList<Integer> row : lhs) {
-            ArrayList<Integer> newRow = new ArrayList<>();
-            for (Integer i : row) {
-                newRow.add(i);
-            }
-            clone.add(newRow);
+    
+    //TODO COMMAND with system
+    public boolean normalizeEquation(int i) {
+        if (Utils.checkBlocksBounds(this, "normalize", i)) {
+            system.get(i).normalize();
+            return true;
         }
-        return clone;
+        return false;
     }
-
+    
+    //TODO COMMAND
+    public boolean normalizeSystem(){
+        for(MrhsEquation eq : system){
+            eq.normalize();
+        }
+        return true;
+    }
+    
     private int findPivot(int fromRow, int inCol) {
         int iBlock = colToBlockNumber(inCol);
         int realCol = colToRealCol(inCol);
@@ -298,13 +327,7 @@ public class MrhsSystem {
         return result;
     }
 
-    public boolean normalize(int i) {
-        if (Utils.checkBlocksBounds(this, "normalize", i)) {
-            system.get(i).normalize();
-            return true;
-        }
-        return false;
-    }
+    
 
     private int nCols() {
         int result = 0;
@@ -338,7 +361,7 @@ public class MrhsSystem {
         return col;
     }
 
-    public int gauss() {
+    protected int gauss() {
         int nPivots = 0;
         int lead = 0;
         int i;
@@ -403,22 +426,21 @@ public class MrhsSystem {
 
         for (int i = 0; i < max; i++) {
             for (int j = 0; j < nBlocks; j++) {
-                ArrayList<ArrayList<Integer>> list = new ArrayList<>(system.get(j).getRightSide());
-                if (i >= list.size()) {
-                    for (int k = 0; k < 2 * list.get(0).size() - 1; k++) {
+                if (i >= system.get(j).getRightSides().size()) {
+                    for (int k = 0; k < 2 * system.get(j).getLeftSide().get(0).size() - 1; k++) {
                         sb.append(" ");
                     }
                     sb.append("   ");
                     continue;
                 }
-                sb.append(list.get(i) + " ");
+                sb.append(system.get(j).getRightSides().get(i) + " ");
                 sb.append("  ");
             }
             sb.append("\n");
         }
-
+        
         return sb.toString().replaceAll("[^0-9- \\n]", "");
-    }
+    }    
 
     public String toFileString() {
         String newLineChar = System.getProperty("line.separator");
@@ -449,7 +471,7 @@ public class MrhsSystem {
         }
 
         for (MrhsEquation e : system) {
-            for (ArrayList<Integer> rs : e.getRightSide()) {
+            for (List<Integer> rs : e.getRightSides()) {
                 sb.append(rs + newLineChar);
             }
             sb.append(newLineChar);
@@ -473,8 +495,12 @@ public class MrhsSystem {
         this.nBlocks = nBlocks;
         system = new ArrayList<>(nBlocks);
 
+        if(!(randomRange == 0 || randomRange == 1)){
+            System.err.println("random: randomRange should be 0 (false) or 1 (true).");
+            return false;
+        }
         if (density <= 0 || density >= 1) {
-            System.err.println("random: Density is not value between (0,1)");
+            System.err.println("random: Density is not value in (0,1).");
             return false;
         }
         if (nRows == 0 || nBlocks == 0 || nCols == 0 || nRHS == 0) {
@@ -505,24 +531,26 @@ public class MrhsSystem {
             }
 
         }
-//        int nula = 0;
-//        int jedna = 0;
-//        for (MrhsEquation eq : system) {
-//            for (ArrayList<Integer> lhs : eq.getLeftSide()) {
-//                for (Integer i : lhs) {
-//                    if (i == 0) {
-//                        nula++;
-//                    } else {
-//                        jedna++;
-//                    }
-//                }
-//            }
-//        }
-//        System.out.println(density);
-//        System.out.println("Nula= " + nula + " jedna= " + jedna + " celok= " + (nBlocks * nCols * nRows));
 
         isSystemLoaded = true;
         return true;
     }
 
+    public boolean guess(int variable, Integer value){
+        
+        if(!Utils.checkRowsBounds(this, "guess", variable)){
+            return false;
+        }
+        if(!(value == 0 || value == 1)){
+            System.err.println("guess: Value of guessed variable should be either 0 or 1.");
+            return false;
+        }
+        
+        for(MrhsEquation eq : system){
+            eq.guess(variable, value);
+        }
+        
+        return true;
+    }
+    
 }

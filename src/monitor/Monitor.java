@@ -3,6 +3,7 @@ package monitor;
 import args.ArgsInterpreter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import mrhs.MrhsSystem;
 
@@ -36,7 +37,7 @@ public class Monitor {
         while (true) {
             System.err.print("> ");
             String inputFromConsole = scan.nextLine();
-            ArrayList<String> parsedInputFromConsole = new ArrayList<>(Arrays.asList(inputFromConsole.split(" ")));
+            List<String> parsedInputFromConsole = new ArrayList<>(Arrays.asList(inputFromConsole.split(" ")));
             String commandName = parsedInputFromConsole.get(0);
             parsedInputFromConsole.remove(0);
             arguments.setArguments(parsedInputFromConsole);

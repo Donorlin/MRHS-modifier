@@ -11,14 +11,16 @@ import mrhs.MrhsSystem;
 public class CommandFactory {
 
     private Map<String, Command> commands;
-
+    
     public CommandFactory(MrhsSystem system, Arguments args) {
         commands = new HashMap<>();
+        
         commands.put("swapblocks", new SwapBlockCommand(system, args));
         commands.put("deleteblock", new DeleteBlockCommand(system, args));
         commands.put("permuteblocks", new PermuteBlocksCommand(system, args));
         commands.put("glue", new GlueCommand(system, args));
         commands.put("normalize", new NormalizeEquationCommand(system, args));
+        commands.put("normalizeS", new NormalizeSystemCommand(system, args));
 
         commands.put("addrow", new AddRowCommand(system, args));
         commands.put("swaprows", new SwapRowsCommand(system, args));
@@ -39,7 +41,7 @@ public class CommandFactory {
         commands.put("echo", new EchoCommand(args));
         
         
-        
+        commands.put("guess", new GuessCommand(system, args));
         commands.put("build", new BuildCommand(system,args));
     }
 

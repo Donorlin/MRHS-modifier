@@ -22,9 +22,9 @@ public class BuildCommand implements Command {
         if (Utils.checkNumberOfArguments(arguments, 0, "build")
                 && Utils.checkIsSystemLoaded(system, "build")) {
             MrhsBuilder builder = new MrhsBuilder(system);
-            builder.build();
+            return builder.build();
         }
-        return true;
+        return false;
     }
 
 }

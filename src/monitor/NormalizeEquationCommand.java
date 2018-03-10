@@ -23,10 +23,10 @@ public class NormalizeEquationCommand implements Command {
         if (Utils.checkNumberOfArguments(arguments, 1, "normalize")
                 && Utils.checkTypeOfArguments(arguments, "normalize")
                 && Utils.checkIsSystemLoaded(system, "normalize")) {
-            system.normalize(Integer.parseInt(args.get(0)));
+            system.normalizeEquation(Integer.parseInt(args.get(0)));
             return true;
         }
         return false;
     }
-
+    
 }

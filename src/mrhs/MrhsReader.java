@@ -65,7 +65,7 @@ public class MrhsReader {
             eq.setnCols(scan.nextInt());
             eq.setnRHS(scan.nextInt());
             eq.setLeftSide(new ArrayList<>(system.getnRows()));
-            eq.setRightSide(new ArrayList<>(eq.getnRHS()));
+            eq.setRightSides(new ArrayList<>(eq.getnRHS()));
             system.getSystem().add(eq);
         }
     }
@@ -74,7 +74,7 @@ public class MrhsReader {
         String tmp;
         for (int i = 0; i < system.getnRows(); i++) {
             for (int j = 0; j < system.getnBlocks(); j++) {
-                ArrayList<Integer> list = new ArrayList<>();
+                List<Integer> list = new ArrayList<>();
                 if (system.getnBlocks() == 1) {
                     tmp = scan.next();
                     list.add(Integer.parseInt(tmp.substring(1, 2)));
@@ -111,12 +111,12 @@ public class MrhsReader {
         String tmp;
         for (int i = 0; i < system.getnBlocks(); i++) {
             for (int j = 0; j < system.getSystem().get(i).getnRHS(); j++) {
-                ArrayList<Integer> list = new ArrayList<>();
+                List<Integer> list = new ArrayList<>();
                 tmp = scan.next();
                 if (system.getSystem().get(i).getnCols() == 1) {
                     list.add(Integer.parseInt(Character.toString(tmp.charAt(1))));
                     if (!system.getSystem().get(i).containsRhs(list)) {
-                        system.getSystem().get(i).getRightSide().add(list);
+                        system.getSystem().get(i).getRightSides().add(list);
                     }
                     continue;
                 }
@@ -127,7 +127,7 @@ public class MrhsReader {
                 tmp = scan.next();
                 list.add(Integer.parseInt(tmp.substring(0, 1)));
                 if (!system.getSystem().get(i).containsRhs(list)) {
-                    system.getSystem().get(i).getRightSide().add(list);
+                    system.getSystem().get(i).getRightSides().add(list);
                 }
             }
         }

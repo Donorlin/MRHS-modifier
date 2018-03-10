@@ -18,7 +18,7 @@ public class RandomSystemCommand implements Command {
         this.arguments = arguments;
     }
 
-    protected static boolean checkTypeOfArguments(Arguments arguments) {
+    private static boolean checkTypeOfArguments(Arguments arguments) {
         List<String> args = arguments.getArguments();
         Pattern patternInt = Pattern.compile("^-?\\d+$");
         Pattern patternDouble = Pattern.compile("^\\d.\\d+$");
@@ -28,11 +28,6 @@ public class RandomSystemCommand implements Command {
                 return false;
             }
         }
-        if (!("0".equals(args.get(4)) || "1".equals(args.get(4)))) {
-            System.err.println("random: randomRange should be 0 (false) or 1(true).");
-            return false;
-        }
-
         if (!patternDouble.matcher(args.get(5)).matches()) {
             System.err.println("random: Density should be type of double.");
             return false;
@@ -56,5 +51,4 @@ public class RandomSystemCommand implements Command {
         }
         return false;
     }
-
 }

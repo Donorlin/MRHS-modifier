@@ -3,6 +3,7 @@ package mrhs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -16,8 +17,8 @@ public class MrhsEquation {
     private int nRHS;
     private Double g;
     private Integer p;
-    private ArrayList<ArrayList<Integer>> leftSide;
-    private ArrayList<ArrayList<Integer>> rightSide;
+    private List<List<Integer>> leftSide;
+    private List<List<Integer>> rightSides;
         
     protected void setnRHS(int nRHS) {
         this.nRHS = nRHS;
@@ -39,11 +40,11 @@ public class MrhsEquation {
         this.p = p;
     }
     
-    protected void setRightSide(ArrayList<ArrayList<Integer>> leftSide) {
-        this.rightSide = leftSide;
+    protected void setRightSides(List<List<Integer>> leftSide) {
+        this.rightSides = leftSide;
     }
 
-    protected void setLeftSide(ArrayList<ArrayList<Integer>> rightSide) {
+    protected void setLeftSide(List<List<Integer>> rightSide) {
         this.leftSide = rightSide;
     }
 
@@ -67,19 +68,19 @@ public class MrhsEquation {
         return p;
     }    
     
-    protected ArrayList<ArrayList<Integer>> getLeftSide() {
+    protected List<List<Integer>> getLeftSide() {
         return leftSide;
     }
 
-    protected ArrayList<ArrayList<Integer>> getRightSide() {
-        return rightSide;
+    protected List<List<Integer>> getRightSides() {
+        return rightSides;
     }
 
     
     protected void generateRandomLeftSide(Random rand, int nRows, int nCols, double density) {
         leftSide = new ArrayList<>();
         for (int j = 0; j < nRows; j++) {
-            ArrayList<Integer> l = new ArrayList<>();
+            List<Integer> l = new ArrayList<>();
             for (int k = 0; k < nCols; k++) {                
                 double den = rand.nextDouble();
                 if(den <= density){
@@ -93,25 +94,25 @@ public class MrhsEquation {
     }
 
     protected void generateRandomRightSides(Random rand, int nRHS, int nCols) {
-        rightSide = new ArrayList<>();
-        while(rightSide.size() != nRHS){
-            ArrayList<Integer> r = new ArrayList<>();
+        rightSides = new ArrayList<>();
+        while(rightSides.size() != nRHS){
+            List<Integer> r = new ArrayList<>();
             for (int k = 0; k < nCols; k++) {
                 r.add(rand.nextInt(2));
             }
             if(!containsRhs(r)){
-                rightSide.add(r);
+                rightSides.add(r);
             }  
         }
     }
     
-    protected boolean containsRhs(ArrayList<Integer> rhs){
-        return rightSide.contains(rhs);
+    protected boolean containsRhs(List<Integer> rhs){
+        return rightSides.contains(rhs);
     }
     
     protected boolean checkSizes() {
-        if (nRHS != rightSide.size()) {
-            nRHS = rightSide.size();
+        if (nRHS != rightSides.size()) {
+            nRHS = rightSides.size();
         }
         if (nRows != leftSide.size()) {
             nRows = leftSide.size();
@@ -122,12 +123,12 @@ public class MrhsEquation {
     private boolean checkAllCols() {
         int sizeFirst = leftSide.get(0).size();
 
-        for (ArrayList<Integer> ls : leftSide) {
+        for (List<Integer> ls : leftSide) {
             if (sizeFirst != ls.size()) {
                 return false;
             }
         }
-        for (ArrayList<Integer> rs : rightSide) {
+        for (List<Integer> rs : rightSides) {
             if (sizeFirst != rs.size()) {
                 return false;
             }
@@ -140,10 +141,10 @@ public class MrhsEquation {
 
     protected boolean swapCols(int i, int j) {
         if (Utils.checkColumnsBounds(this, "swapcols", i, j)) {
-            for (ArrayList<Integer> l : rightSide) {
+            for (List<Integer> l : rightSides) {
                 Collections.swap(l, i, j);
             }
-            for (ArrayList<Integer> l : leftSide) {
+            for (List<Integer> l : leftSide) {
                 Collections.swap(l, i, j);
             }
             return true;
@@ -153,12 +154,12 @@ public class MrhsEquation {
 
     protected boolean addCol(int to, int toAdd) {
         if (Utils.checkColumnsBounds(this, "addcols", to, toAdd) && (to != toAdd)) {
-            for (ArrayList<Integer> l : leftSide) {
+            for (List<Integer> l : leftSide) {
                 int valueTo = l.get(to);
                 int valueToAdd = l.get(toAdd);
                 l.set(to, valueTo ^ valueToAdd);
             }
-            for (ArrayList<Integer> r : rightSide) {
+            for (List<Integer> r : rightSides) {
                 int valueTo = r.get(to);
                 int valueToAdd = r.get(toAdd);
                 r.set(to, valueTo ^ valueToAdd);
@@ -170,10 +171,10 @@ public class MrhsEquation {
 
     protected boolean deleteCol(int i) {
         if (Utils.checkColumnsBounds(this, "deletecol", i)) {
-            for (ArrayList<Integer> l : leftSide) {
+            for (List<Integer> l : leftSide) {
                 l.remove(i);
             }
-            for (ArrayList<Integer> r : rightSide) {
+            for (List<Integer> r : rightSides) {
                 r.remove(i);
             }
             nCols--;
@@ -229,21 +230,21 @@ public class MrhsEquation {
     private int checkAndFixZeroColumns() {       
         for (int i = 0; i < nCols; i++) {
             if (isZeroColumn(i)) {
-                Iterator<ArrayList<Integer>> it = rightSide.iterator();
+                Iterator<List<Integer>> it = rightSides.iterator();
                 for(;it.hasNext();){
-                    ArrayList<Integer> rhs = it.next();
+                    List<Integer> rhs = it.next();
                     if(rhs.get(i) == 1){
                         it.remove();
                     }
                 }
             }
         }
-        nRHS = rightSide.size();
-        return rightSide.size();
+        nRHS = rightSides.size();
+        return rightSides.size();
     }
     
     private boolean isZeroColumn(int i) {
-        for (ArrayList<Integer> lhs : leftSide) {
+        for (List<Integer> lhs : leftSide) {
             if (lhs.get(i) == 1) {
                 return false;
             }
@@ -262,12 +263,32 @@ public class MrhsEquation {
         return nCols;
     }
 
+    private void fillRowWithZeros(int row){
+        for(int i = 0; i < nCols;i++){
+            leftSide.get(row).set(i, 0);
+        }  
+    }
+    
+    protected void guess(int variable, int value){
+        if(value == 1){
+            for(int i = 0; i < nCols; i++){
+                Integer colValLhs = leftSide.get(variable).get(i);
+                for(List<Integer> rhs : rightSides){
+                    Integer colValRhs = rhs.get(i);
+                    rhs.set(i, colValRhs^colValLhs);
+                }                
+            }
+        }
+        fillRowWithZeros(variable);
+    }
+    
+    
     @Override
     public String toString() {
         String newLineChar = System.getProperty("line.separator");
         StringBuilder sb = new StringBuilder();
         sb.append(newLineChar);
-        for(ArrayList<Integer> row : leftSide){
+        for(List<Integer> row : leftSide){
             for(Integer i : row){
                 sb.append(i + " ");
             }
@@ -276,16 +297,12 @@ public class MrhsEquation {
         for(int i = 0; i < nCols; i++){
             sb.append("-");
         }
-        for(ArrayList<Integer> row : rightSide){
+        for(List<Integer> row : rightSides){
             for(Integer i : row){
                 sb.append(i + " ");
             }
             sb.append(newLineChar);
         }
         return sb.toString();
-    }
-    
-    
-    
-    
+    }     
 }

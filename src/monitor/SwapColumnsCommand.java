@@ -27,5 +27,5 @@ public class SwapColumnsCommand implements Command {
         }
         return false;
     }
-
+    
 }

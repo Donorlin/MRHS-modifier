@@ -1,7 +1,5 @@
 package mrhs;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +9,7 @@ import java.util.List;
  */
 public class MrhsBuilder {
 
-    private ArrayList<MrhsEquation> pool;
+    private List<MrhsEquation> pool;
     private MrhsSystem system;
 
     public MrhsBuilder(MrhsSystem system) {
@@ -30,7 +28,7 @@ public class MrhsBuilder {
         for (MrhsEquation eq : pool) {
             eq.normalize();
             eq.deleteZeroColumns();
-            eq.setG(Math.log(eq.getRightSide().size()) / Math.log(2));
+            eq.setG(Math.log(eq.getRightSides().size()) / Math.log(2));
             eq.setP(eq.getnCols());
         }
     }
@@ -40,9 +38,6 @@ public class MrhsBuilder {
     }
 
     private MrhsSystem phaseB() {
-        for (MrhsEquation eq : pool) {
-            System.out.println(eq.getG());
-        }
         MrhsSystem system = new MrhsSystem();
         system.setnRows(pool.get(0).getLeftSide().size());
         while (system.gauss() != system.getnRows()) {
@@ -54,15 +49,15 @@ public class MrhsBuilder {
                 break;
             }
 
+
             Integer r = system.gauss();
             for (MrhsEquation eq : pool) {
                 system.addBlock(eq);
                 Integer r_eq = system.gauss();
                 eq.setP(r_eq - r);
-                eq.setG(r_eq - r - eq.getnCols() + Math.log(eq.getRightSide().size()) / Math.log(2));
+                eq.setG(r_eq - r - eq.getnCols() + Math.log(eq.getRightSides().size()) / Math.log(2));
                 system.deleteBlock(system.getnBlocks() - 1);
             }
-
         }
         pool.sort(new MrhsEquationGComparator());
         for (MrhsEquation eq : pool) {

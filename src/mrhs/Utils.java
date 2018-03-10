@@ -62,8 +62,8 @@ public class Utils {
         return true;
     }
 
-    protected static ArrayList<MrhsEquation> copyEquationsValues(ArrayList<MrhsEquation> equations) {
-        ArrayList<MrhsEquation> result = new ArrayList<>();
+    protected static List<MrhsEquation> copyEquationsValues(List<MrhsEquation> equations) {
+        List<MrhsEquation> result = new ArrayList<>();
         for (MrhsEquation eq : equations) {
             MrhsEquation copyEq = copyEquationValue(eq);
             result.add(copyEq);
@@ -78,18 +78,18 @@ public class Utils {
         copyEq.setnCols(equation.getnCols());
         copyEq.setnRHS(equation.getnRHS());
 
-        ArrayList<ArrayList<Integer>> copyLhs = copyHandValues(equation.getLeftSide());
+        List<List<Integer>> copyLhs = copyHandValues(equation.getLeftSide());
         copyEq.setLeftSide(copyLhs);
-        ArrayList<ArrayList<Integer>> copyRhs = copyHandValues(equation.getRightSide());
-        copyEq.setRightSide(copyRhs);
+        List<List<Integer>> copyRhs = copyHandValues(equation.getRightSides());
+        copyEq.setRightSides(copyRhs);
 
         return copyEq;
     }
 
-    protected static ArrayList<ArrayList<Integer>> copyHandValues(ArrayList<ArrayList<Integer>> hand) {
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>(hand.size());
-        for (ArrayList<Integer> row : hand) {
-            ArrayList<Integer> copyRow = new ArrayList<>();
+    protected static List<List<Integer>> copyHandValues(List<List<Integer>> hand) {
+        List<List<Integer>> result = new ArrayList<>(hand.size());
+        for (List<Integer> row : hand) {
+            List<Integer> copyRow = new ArrayList<>();
             for (Integer val : row) {
                 copyRow.add(val);
             }
@@ -105,7 +105,7 @@ public class Utils {
         result.setnRows(system.getnRows());
         result.setIsSystemLoaded(system.isSystemLoaded());
         
-        ArrayList<MrhsEquation> equations = copyEquationsValues(system.getSystem());
+        List<MrhsEquation> equations = copyEquationsValues(system.getSystem());
         result.setSystem(equations);
         
         return result;

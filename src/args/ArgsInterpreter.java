@@ -14,7 +14,7 @@ import mrhs.MrhsSystem;
 public class ArgsInterpreter {
 
     private final Map<String,List<String>> parsedArgs = new HashMap<>();
-    String[] args;
+    private String[] args;
     private MrhsSystem system;
     
     public ArgsInterpreter(String[] args, MrhsSystem system){
