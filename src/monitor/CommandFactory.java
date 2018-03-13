@@ -19,7 +19,7 @@ public class CommandFactory {
         commands.put("deleteblock", new DeleteBlockCommand(system, args));
         commands.put("permuteblocks", new PermuteBlocksCommand(system, args));
         commands.put("glue", new GlueCommand(system, args));
-        commands.put("normalize", new NormalizeEquationCommand(system, args));
+        commands.put("normalizeE", new NormalizeEquationCommand(system, args));
         commands.put("normalizeS", new NormalizeSystemCommand(system, args));
 
         commands.put("addrow", new AddRowCommand(system, args));
