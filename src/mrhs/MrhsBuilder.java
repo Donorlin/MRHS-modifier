@@ -46,27 +46,28 @@ public class MrhsBuilder {
             MrhsEquation picked = pickBlock();
             system.addBlock(picked);
             pool.remove(picked);
-
             if (pool.isEmpty()) {
                 break;
             }
             nPivotsSystem = nPivotsSystem + system.getSystem().get(system.getnBlocks() - 1).getP();
             for (MrhsEquation eq : pool) {
                 Integer newnPivotsSystem;
-                system.addBlock(eq);                
-                if(nPivotsSystem == nRows){
+                system.addBlock(eq);
+                if (nPivotsSystem == nRows) {
                     newnPivotsSystem = nPivotsSystem;
-                }else{
+                } else {
                     newnPivotsSystem = system.gauss();
-                }    
+                }
                 eq.setP(newnPivotsSystem - nPivotsSystem);
                 eq.setG(newnPivotsSystem - nPivotsSystem - eq.getnCols() + Math.log(eq.getRightSides().size()) / Math.log(2));
                 system.deleteBlock(system.getnBlocks() - 1);
             }
         }
-        pool.sort(new MrhsEquationGComparator());
-        for (MrhsEquation eq : pool) {
-            system.addBlock(eq);
+        if (!pool.isEmpty()) {
+            pool.sort(new MrhsEquationGComparator());
+            for (MrhsEquation eq : pool) {
+                system.addBlock(eq);
+            }
         }
         return system;
     }
