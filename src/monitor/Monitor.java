@@ -13,8 +13,7 @@ import mrhs.MrhsSystem;
  */
 public class Monitor {
 
-    private static final String VERSION = "0.1";
-    // 0.1 glue added, permfile added, save fixed
+    private static final String VERSION = "0.xxx";
 
     private final MrhsSystem system = new MrhsSystem();
     private final Arguments arguments = new Arguments();
@@ -41,11 +40,16 @@ public class Monitor {
             String commandName = parsedInputFromConsole.get(0);
             parsedInputFromConsole.remove(0);
             arguments.setArguments(parsedInputFromConsole);
+            
+            long start = System.nanoTime();
             if(commands.getAndExecuteCommand(commandName)){
-                System.err.println(counter + ": " + inputFromConsole + " DONE");
+                System.err.print(counter + ": " + inputFromConsole + " DONE");
             }else{
-                System.err.println(counter + ": " + inputFromConsole + " FAILED");
+                System.err.print(counter + ": " + inputFromConsole + " FAILED");
             }
+            long end = System.nanoTime();
+            System.err.print(" after " + (end - start)/1000000000.0 + " seconds.\n");
+            
             counter += 1;
         }
     }

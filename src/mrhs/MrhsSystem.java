@@ -204,21 +204,21 @@ public class MrhsSystem {
         }
         return false;
     }
-    
+
     // TODO COMMAND
-    public boolean deleteZeroColumns(){
-        for(MrhsEquation eq : system){
+    public boolean deleteZeroColumns() {
+        for (MrhsEquation eq : system) {
             eq.deleteZeroColumns();
-        }       
-        
+        }
+
         return true;
     }
 
     public boolean glue(int iB, int jB, int keepOld) {
         iB = Math.floorMod(iB, system.size());
         jB = Math.floorMod(jB, system.size());
-        
-        if(!(keepOld == 0 || keepOld == 1)){
+
+        if (!(keepOld == 0 || keepOld == 1)) {
             System.err.println("glue: keepOld should be 0 (false) or 1 (true)");
             return false;
         }
@@ -226,12 +226,12 @@ public class MrhsSystem {
             return false;
         }
         MrhsEquation glued = createGluedBlock(iB, jB);
-        if(glued.getnRHS() == 0){
-            if(keepOld == 1){
+        if (glued.getnRHS() == 0) {
+            if (keepOld == 1) {
                 System.err.println("glue: Glued block has zero right-hand sides. Not adding it.");
-            }else{
+            } else {
                 System.err.println("glue: Glued block has zero right-hand sides. Not replacing old blocks.");
-            }            
+            }
             return false;
         }
         if (keepOld > 0) {
@@ -276,15 +276,15 @@ public class MrhsSystem {
             List<Integer> rowFromLeftSideOfJ = leftSideOfJ.get(i);
             newLeftSide.get(i).addAll(rowFromLeftSideOfJ);
         }
-        
+
         return newLeftSide;
     }
 
     private List<List<Integer>> createGluedRightHandSides(int iB, int jB) {
-        List<List<Integer>> newRightSides = new ArrayList<>();      
+        List<List<Integer>> newRightSides = new ArrayList<>();
         List<List<Integer>> rightSidesOfI = Utils.copyHandValues(system.get(iB).getRightSides());
         List<List<Integer>> rightSidesOfJ = Utils.copyHandValues(system.get(jB).getRightSides());
-        
+
         for (List<Integer> rhsI : rightSidesOfI) {
             for (List<Integer> rhsJ : rightSidesOfJ) {
                 List<Integer> newRhs = new ArrayList<>();
@@ -293,10 +293,10 @@ public class MrhsSystem {
                 newRightSides.add(newRhs);
             }
         }
-                
+
         return newRightSides;
     }
-    
+
     //TODO COMMAND with system
     public boolean normalizeEquation(int i) {
         if (Utils.checkBlocksBounds(this, "normalize", i)) {
@@ -305,15 +305,15 @@ public class MrhsSystem {
         }
         return false;
     }
-    
+
     //TODO COMMAND
-    public boolean normalizeSystem(){
-        for(MrhsEquation eq : system){
+    public boolean normalizeSystem() {
+        for (MrhsEquation eq : system) {
             eq.normalize();
         }
         return true;
     }
-    
+
     private int findPivot(int fromRow, int inCol) {
         int iBlock = colToBlockNumber(inCol);
         int realCol = colToRealCol(inCol);
@@ -326,8 +326,6 @@ public class MrhsSystem {
         }
         return result;
     }
-
-    
 
     private int nCols() {
         int result = 0;
@@ -438,9 +436,9 @@ public class MrhsSystem {
             }
             sb.append("\n");
         }
-        
+
         return sb.toString().replaceAll("[^0-9- \\n]", "");
-    }    
+    }
 
     public String toFileString() {
         String newLineChar = System.getProperty("line.separator");
@@ -490,12 +488,12 @@ public class MrhsSystem {
     }
 
     public boolean generateRandomSystem(int nRows, int nBlocks, int nCols, int nRHS, int randomRange, double density) {
-        Random rand = new Random(System.currentTimeMillis());
+        Random rand = new Random(System.nanoTime());
         this.nRows = nRows;
         this.nBlocks = nBlocks;
         system = new ArrayList<>(nBlocks);
 
-        if(!(randomRange == 0 || randomRange == 1)){
+        if (!(randomRange == 0 || randomRange == 1)) {
             System.err.println("random: randomRange should be 0 (false) or 1 (true).");
             return false;
         }
@@ -536,21 +534,21 @@ public class MrhsSystem {
         return true;
     }
 
-    public boolean guess(int variable, Integer value){
-        
-        if(!Utils.checkRowsBounds(this, "guess", variable)){
+    public boolean guess(int variable, Integer value) {
+
+        if (!Utils.checkRowsBounds(this, "guess", variable)) {
             return false;
         }
-        if(!(value == 0 || value == 1)){
+        if (!(value == 0 || value == 1)) {
             System.err.println("guess: Value of guessed variable should be either 0 or 1.");
             return false;
         }
-        
-        for(MrhsEquation eq : system){
+
+        for (MrhsEquation eq : system) {
             eq.guess(variable, value);
         }
-        
+
         return true;
     }
-    
+
 }

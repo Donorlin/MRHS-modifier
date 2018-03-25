@@ -40,7 +40,10 @@ public class MrhsBuilder {
     private MrhsSystem phaseB() {
         MrhsSystem system = new MrhsSystem();
         system.setnRows(pool.get(0).getLeftSide().size());
-        while (system.gauss() != system.getnRows()) {
+        int nRows = pool.get(0).getnRows();
+        int nPivotsSystem = 0;
+        
+        while (nPivotsSystem != nRows) {
             MrhsEquation picked = pickBlock();
             system.addBlock(picked);
             pool.remove(picked);
@@ -48,14 +51,12 @@ public class MrhsBuilder {
             if (pool.isEmpty()) {
                 break;
             }
-
-
-            Integer r = system.gauss();
+            nPivotsSystem = system.gauss();
             for (MrhsEquation eq : pool) {
                 system.addBlock(eq);
-                Integer r_eq = system.gauss();
-                eq.setP(r_eq - r);
-                eq.setG(r_eq - r - eq.getnCols() + Math.log(eq.getRightSides().size()) / Math.log(2));
+                Integer newnPivotsSystem = system.gauss();
+                eq.setP(newnPivotsSystem - nPivotsSystem);
+                eq.setG(newnPivotsSystem - nPivotsSystem - eq.getnCols() + Math.log(eq.getRightSides().size()) / Math.log(2));
                 system.deleteBlock(system.getnBlocks() - 1);
             }
         }
