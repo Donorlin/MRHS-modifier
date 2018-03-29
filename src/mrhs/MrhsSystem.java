@@ -60,10 +60,7 @@ public class MrhsSystem {
         if (!checkEquationSizes()) {
             return false;
         }
-        if (!checkNumberOfRows()) {
-            return false;
-        }
-        return true;
+        return checkNumberOfRows();
     }
 
     private boolean checkNumberOfRows() {
@@ -310,7 +307,7 @@ public class MrhsSystem {
     public boolean normalizeSystem() {
         for (MrhsEquation eq : system) {
             eq.normalize();
-        }
+        }        
         return true;
     }
 
@@ -405,7 +402,7 @@ public class MrhsSystem {
         sb.append("\n");
         for (int i = 0; i < nRows; i++) {
             for (int j = 0; j < nBlocks; j++) {
-                sb.append(system.get(j).getLeftSide().get(i) + " ");
+                sb.append(system.get(j).getLeftSide().get(i)).append(" ");
                 sb.append("  ");
             }
             sb.append("\n");
@@ -431,7 +428,7 @@ public class MrhsSystem {
                     sb.append("   ");
                     continue;
                 }
-                sb.append(system.get(j).getRightSides().get(i) + " ");
+                sb.append(system.get(j).getRightSides().get(i)).append(" ");
                 sb.append("  ");
             }
             sb.append("\n");
@@ -447,10 +444,10 @@ public class MrhsSystem {
             System.err.println("Something is wrong with this system, probably some equation has different number of rows than the other, or some row has different number of columns than the other rows.");
             return null;
         }
-        sb.append(nRows + newLineChar);
-        sb.append(nBlocks + newLineChar);
+        sb.append(nRows).append(newLineChar);
+        sb.append(nBlocks).append(newLineChar);
         for (MrhsEquation e : system) {
-            sb.append(e.getnCols() + " " + e.getnRHS() + newLineChar);
+            sb.append(e.getnCols()).append(" ").append(e.getnRHS()).append(newLineChar);
         }
         for (int i = 0; i < nRows; i++) {
             sb.append("[");
@@ -465,12 +462,12 @@ public class MrhsSystem {
                     sb.append("  ");
                 }
             }
-            sb.append("]" + newLineChar);
+            sb.append("]").append(newLineChar);
         }
 
         for (MrhsEquation e : system) {
             for (List<Integer> rs : e.getRightSides()) {
-                sb.append(rs + newLineChar);
+                sb.append(rs).append(newLineChar);
             }
             sb.append(newLineChar);
         }
