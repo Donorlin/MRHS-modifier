@@ -1,6 +1,7 @@
 package mrhs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -281,6 +282,110 @@ public class MrhsEquation {
         fillRowWithZeros(variable);
     }
 
+    private List<List<Integer>> generateCombinationTable(int n) {
+        int size = 1 << n;
+        List<List<Integer>> table = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            List<Integer> row = new ArrayList<>();
+            String binary = Integer.toBinaryString(i);
+            if (binary.length() < n) {
+                for (int j = 0; j < (n - binary.length()); j++) {
+                    row.add(0);
+                }
+            }
+            for (char c : binary.toCharArray()) {
+                row.add(Integer.parseInt(Character.toString(c)));
+            }
+            table.add(row);
+        }
+        return table;
+    }
+    
+    private List<List<Integer>> removeBadCombinations(List<List<Integer>> table){
+        for (Iterator<List<Integer>> it = table.iterator(); it.hasNext();) {
+            int ones = 0;
+            List<Integer> row = it.next();
+            for (Integer i : row) {
+                if (i == 1) {
+                    ones++;
+                }
+            }
+            if (ones == 0 || ones == 1) {
+                it.remove();
+            }
+        }
+        return table;
+    }
+
+    private MrhsEquation expandEquation() {
+        MrhsEquation expanded = Utils.copyEquationValue(this);
+        List<List<Integer>> table = removeBadCombinations(generateCombinationTable(nCols));
+        for (int i = 0; i < table.size(); i++) {
+            for (List<Integer> row : expanded.getLeftSide()) {
+                Integer valueRow = 0;
+                for (int j = 0; j < expanded.getnCols(); j++) {
+                    valueRow = valueRow ^ (table.get(i).get(j) * row.get(j));
+                }
+                row.add(valueRow);
+            }
+            for (List<Integer> rhs : expanded.getRightSides()) {
+                Integer valueRhs = 0;
+                for (int j = 0; j < expanded.getnCols(); j++) {
+                    valueRhs = valueRhs ^ (table.get(i).get(j) * rhs.get(j));
+                }
+                rhs.add(valueRhs);
+            }
+        }
+        expanded.setnCols(expanded.getnCols() + table.size());
+        return expanded;
+    }
+    
+    private MrhsEquation columnsToEquation(int i, int j, MrhsEquation eq){
+        MrhsEquation mrhs = new MrhsEquation();
+        mrhs.setLeftSide(new ArrayList<>());
+        mrhs.setRightSides(new ArrayList<>());
+        mrhs.setnCols(2);
+        mrhs.setnRows(eq.getnRows());
+        for(List<Integer> row : eq.getLeftSide()){
+            List<Integer> newRow = Arrays.asList(row.get(i),row.get(j));
+            mrhs.getLeftSide().add(newRow);
+        }
+        for(List<Integer> rhs : eq.getRightSides()){
+            List<Integer> newRhs = Arrays.asList(rhs.get(i),rhs.get(j));
+            if(!mrhs.getRightSides().contains(newRhs)){
+                mrhs.getRightSides().add(newRhs);
+            }
+        }        
+        mrhs.setnRHS(mrhs.getRightSides().size());
+        return mrhs;
+    }
+    
+    private List<MrhsEquation> breakExpandedEquation(MrhsEquation expanded){
+        List<MrhsEquation> result = new ArrayList<>();
+        for(int i = 0; i < (expanded.getnCols() - 1); i++){
+            for(int j = i + 1; j < expanded.getnCols(); j++){
+                result.add(columnsToEquation(i, j, expanded));
+            }
+        }               
+        return result;
+    }
+    
+    protected List<MrhsEquation> expansion(){
+        List<MrhsEquation> exp = new ArrayList<>();
+        //List<List<Integer>> table = generateCombinationTable(2);
+        MrhsEquation expanded = expandEquation();        
+        List<MrhsEquation> broken = breakExpandedEquation(expanded);
+        for(MrhsEquation eq : broken){
+            //if(!eq.getRightSides().containsAll(table));
+            if(eq.getRightSides().size() != 4){
+                exp.add(eq);
+            }
+        }        
+        return exp;
+    }
+            
+    
+
     @Override
     public String toString() {
         String newLineChar = System.getProperty("line.separator");
@@ -288,16 +393,17 @@ public class MrhsEquation {
         sb.append(newLineChar);
         for (List<Integer> row : leftSide) {
             for (Integer i : row) {
-                sb.append(i + " ");
+                sb.append(i).append(" ");
             }
             sb.append(newLineChar);
         }
-        for (int i = 0; i < nCols; i++) {
+        for (int i = 0; i < (2 * nCols - 1); i++) {
             sb.append("-");
         }
+        sb.append(newLineChar);
         for (List<Integer> row : rightSides) {
             for (Integer i : row) {
-                sb.append(i + " ");
+                sb.append(i).append(" ");
             }
             sb.append(newLineChar);
         }

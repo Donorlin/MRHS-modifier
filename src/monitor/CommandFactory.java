@@ -43,6 +43,9 @@ public class CommandFactory {
         
         commands.put("guess", new GuessCommand(system, args));
         commands.put("build", new BuildCommand(system,args));
+        
+        
+        commands.put("expand", new ExpansionCommand(system, args));
     }
 
     public boolean getAndExecuteCommand(String commandName) {

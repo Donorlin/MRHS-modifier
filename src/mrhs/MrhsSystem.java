@@ -548,4 +548,13 @@ public class MrhsSystem {
         return true;
     }
 
+    public boolean expansion(){
+        List<MrhsEquation> toBeAdded = new ArrayList<>();
+        for(MrhsEquation eq : system){
+            toBeAdded.addAll(eq.expansion());
+        }
+        system.addAll(toBeAdded);
+        return true;
+    }
+    
 }
