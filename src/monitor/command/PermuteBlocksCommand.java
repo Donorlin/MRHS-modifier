@@ -1,19 +1,18 @@
-package monitor;
+package monitor.command;
 
 import java.util.List;
-import mrhs.MrhsReader;
 import mrhs.MrhsSystem;
 
 /**
  *
  * @author Daniel Jahodka
  */
-public class LoadSystemCommand implements Command{
+public class PermuteBlocksCommand implements Command {
 
     private MrhsSystem system;
     private Arguments arguments;
 
-    public LoadSystemCommand(MrhsSystem system, Arguments arguments) {
+    public PermuteBlocksCommand(MrhsSystem system, Arguments arguments) {
         this.system = system;
         this.arguments = arguments;
     }
@@ -21,24 +20,22 @@ public class LoadSystemCommand implements Command{
     private boolean checkNumberOfArguments(){
         List<String> args = arguments.getArguments();
         if (args.size() > 1) {
-            System.err.println("load: Illegal number of arguments.");
+            System.err.println("permutateblocks: Illegal number of arguments.");
             return false;
         }
-        
         return true;
     }
-    
+    // TODO PERM FILE
     @Override
     public boolean execute() {
         List<String> args = arguments.getArguments();
-        if(checkNumberOfArguments()){
-            MrhsReader read = new MrhsReader();
-            if(args.isEmpty()){                
-                return read.readFromFile(null, system);
+        if (checkNumberOfArguments() && Utils.checkIsSystemLoaded(system, "permutateblocks")) {
+            if(args.size() == 1){
+                return system.permutateBlocks(args.get(0));
             }else{
-                return read.readFromFile(args.get(0), system);
+                return system.permutateBlocks();
             }
         }
-        return false;
+        return false;        
     }
 }

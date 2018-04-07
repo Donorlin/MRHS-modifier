@@ -1,4 +1,4 @@
-package monitor;
+package monitor.command;
 
 import java.util.List;
 import mrhs.MrhsSystem;
@@ -20,9 +20,9 @@ public class NormalizeEquationCommand implements Command {
     @Override
     public boolean execute() {
         List<String> args = arguments.getArguments();
-        if (Utils.checkNumberOfArguments(arguments, 1, "normalize")
-                && Utils.checkTypeOfArguments(arguments, "normalize")
-                && Utils.checkIsSystemLoaded(system, "normalize")) {
+        if (Utils.checkNumberOfArguments(arguments, 1, "normalizeE")
+                && Utils.checkTypeOfArguments(arguments, "normalizeE")
+                && Utils.checkIsSystemLoaded(system, "normalizeE")) {
             system.normalizeEquation(Integer.parseInt(args.get(0)));
             return true;
         }

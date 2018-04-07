@@ -1,5 +1,6 @@
-package monitor;
+package monitor.command;
 
+import monitor.command.Arguments;
 import java.util.List;
 import java.util.regex.Pattern;
 import mrhs.MrhsSystem;

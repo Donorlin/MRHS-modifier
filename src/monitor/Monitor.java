@@ -1,5 +1,6 @@
 package monitor;
 
+import monitor.command.Arguments;
 import args.ArgsInterpreter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class Monitor {
     public void console() {
         Scanner scan = new Scanner(System.in);
         Integer counter = 1;
-        System.err.println("Welcome in MRHS MODIFIER v" + VERSION);
+        System.err.println("Welcome in MRHS-MODIFIER v" + VERSION);
         System.err.println("For list of commands type \"help\"");
         while (true) {
             System.err.print("> ");

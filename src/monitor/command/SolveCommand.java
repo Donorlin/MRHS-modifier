@@ -1,4 +1,4 @@
-package monitor;
+package monitor.command;
 
 import java.io.BufferedReader;
 import java.io.IOException;

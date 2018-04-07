@@ -3,6 +3,7 @@ package mrhs;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -202,8 +203,7 @@ public class MrhsSystem {
         return false;
     }
 
-    // TODO COMMAND
-    public boolean deleteZeroColumns() {
+    protected boolean deleteZeroColumns() {
         for (MrhsEquation eq : system) {
             eq.deleteZeroColumns();
         }
@@ -294,7 +294,6 @@ public class MrhsSystem {
         return newRightSides;
     }
 
-    //TODO COMMAND with system
     public boolean normalizeEquation(int i) {
         if (Utils.checkBlocksBounds(this, "normalize", i)) {
             system.get(i).normalize();
@@ -303,7 +302,6 @@ public class MrhsSystem {
         return false;
     }
 
-    //TODO COMMAND
     public boolean normalizeSystem() {
         for (MrhsEquation eq : system) {
             eq.normalize();
@@ -550,9 +548,10 @@ public class MrhsSystem {
 
     public boolean expansion(){
         List<MrhsEquation> toBeAdded = new ArrayList<>();
-        for(MrhsEquation eq : system){
+        for(MrhsEquation eq : system){            
             toBeAdded.addAll(eq.expansion());
         }
+        toBeAdded = new ArrayList<>(new HashSet<>(toBeAdded));
         system.addAll(toBeAdded);
         return true;
     }

@@ -1,4 +1,4 @@
-package monitor;
+package monitor.command;
 
 import mrhs.MrhsBuilder;
 import mrhs.MrhsSystem;

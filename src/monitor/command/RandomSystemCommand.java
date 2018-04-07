@@ -1,4 +1,4 @@
-package monitor;
+package monitor.command;
 
 import java.util.List;
 import java.util.regex.Pattern;

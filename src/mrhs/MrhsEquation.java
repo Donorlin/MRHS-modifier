@@ -3,9 +3,12 @@ package mrhs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -300,8 +303,8 @@ public class MrhsEquation {
         }
         return table;
     }
-    
-    private List<List<Integer>> removeBadCombinations(List<List<Integer>> table){
+
+    private List<List<Integer>> removeBadCombinations(List<List<Integer>> table) {
         for (Iterator<List<Integer>> it = table.iterator(); it.hasNext();) {
             int ones = 0;
             List<Integer> row = it.next();
@@ -339,52 +342,56 @@ public class MrhsEquation {
         expanded.setnCols(expanded.getnCols() + table.size());
         return expanded;
     }
-    
-    private MrhsEquation columnsToEquation(int i, int j, MrhsEquation eq){
+
+    private MrhsEquation columnsToEquation(int i, int j, MrhsEquation eq) {
         MrhsEquation mrhs = new MrhsEquation();
         mrhs.setLeftSide(new ArrayList<>());
         mrhs.setRightSides(new ArrayList<>());
         mrhs.setnCols(2);
         mrhs.setnRows(eq.getnRows());
-        for(List<Integer> row : eq.getLeftSide()){
-            List<Integer> newRow = Arrays.asList(row.get(i),row.get(j));
+        for (List<Integer> row : eq.getLeftSide()) {
+            List<Integer> newRow = Arrays.asList(row.get(i), row.get(j));
             mrhs.getLeftSide().add(newRow);
         }
-        for(List<Integer> rhs : eq.getRightSides()){
-            List<Integer> newRhs = Arrays.asList(rhs.get(i),rhs.get(j));
-            if(!mrhs.getRightSides().contains(newRhs)){
+        for (List<Integer> rhs : eq.getRightSides()) {
+            List<Integer> newRhs = Arrays.asList(rhs.get(i), rhs.get(j));
+            if (!mrhs.getRightSides().contains(newRhs)) {
                 mrhs.getRightSides().add(newRhs);
             }
-        }        
+        }
         mrhs.setnRHS(mrhs.getRightSides().size());
         return mrhs;
     }
-    
-    private List<MrhsEquation> breakExpandedEquation(MrhsEquation expanded){
+
+    private List<MrhsEquation> breakExpandedEquation(MrhsEquation expanded) {
         List<MrhsEquation> result = new ArrayList<>();
-        for(int i = 0; i < (expanded.getnCols() - 1); i++){
-            for(int j = i + 1; j < expanded.getnCols(); j++){
+        for (int i = 0; i < (expanded.getnCols() - 1); i++) {
+            for (int j = i + 1; j < expanded.getnCols(); j++) {
                 result.add(columnsToEquation(i, j, expanded));
             }
-        }               
+        }
         return result;
     }
-    
-    protected List<MrhsEquation> expansion(){
+
+    private List<MrhsEquation> cleanUpSameEquations(List<MrhsEquation> mini) {
+        Set<MrhsEquation> set = new HashSet<>(mini);
+        return new ArrayList<>(set);
+    }
+
+    protected List<MrhsEquation> expansion() {
         List<MrhsEquation> exp = new ArrayList<>();
-        //List<List<Integer>> table = generateCombinationTable(2);
-        MrhsEquation expanded = expandEquation();        
-        List<MrhsEquation> broken = breakExpandedEquation(expanded);
-        for(MrhsEquation eq : broken){
-            //if(!eq.getRightSides().containsAll(table));
-            if(eq.getRightSides().size() != 4){
+        List<List<Integer>> table = generateCombinationTable(2);
+        MrhsEquation expanded = expandEquation();
+        List<MrhsEquation> mini = breakExpandedEquation(expanded);
+        for (MrhsEquation eq : mini) {
+            if(!eq.getRightSides().containsAll(table)){
+            //if (eq.getRightSides().size() != 4) {
+                eq.normalize();
                 exp.add(eq);
             }
-        }        
-        return exp;
+        }
+        return cleanUpSameEquations(exp);
     }
-            
-    
 
     @Override
     public String toString() {
@@ -409,4 +416,34 @@ public class MrhsEquation {
         }
         return sb.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.leftSide);
+        hash = 37 * hash + Objects.hashCode(this.rightSides);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MrhsEquation other = (MrhsEquation) obj;
+        if (!Objects.equals(this.leftSide, other.leftSide)) {
+            return false;
+        }
+        if (!Objects.equals(this.rightSides, other.rightSides)) {
+            return false;
+        }
+        return true;
+    }
+
 }

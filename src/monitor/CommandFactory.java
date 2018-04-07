@@ -1,5 +1,6 @@
 package monitor;
 
+import monitor.command.*;
 import java.util.HashMap;
 import java.util.Map;
 import mrhs.MrhsSystem;
