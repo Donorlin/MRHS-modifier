@@ -343,7 +343,7 @@ public class MrhsEquation {
         return expanded;
     }
 
-    private MrhsEquation columnsToEquation(int i, int j, MrhsEquation eq) {
+    private MrhsEquation twoColumnsToEquation(int i, int j, MrhsEquation eq) {
         MrhsEquation mrhs = new MrhsEquation();
         mrhs.setLeftSide(new ArrayList<>());
         mrhs.setRightSides(new ArrayList<>());
@@ -363,34 +363,52 @@ public class MrhsEquation {
         return mrhs;
     }
 
+    private MrhsEquation oneColumnToEquation(int i, MrhsEquation eq) {
+        MrhsEquation mrhs = new MrhsEquation();
+        mrhs.setLeftSide(new ArrayList<>());
+        mrhs.setRightSides(new ArrayList<>());
+        mrhs.setnCols(1);
+        mrhs.setnRows(eq.getnRows());
+        for (List<Integer> row : eq.getLeftSide()) {
+            List<Integer> newRow = Arrays.asList(row.get(i));
+            mrhs.getLeftSide().add(newRow);
+        }
+        for (List<Integer> rhs : eq.getRightSides()) {
+            List<Integer> newRhs = Arrays.asList(rhs.get(i));
+            if (!mrhs.getRightSides().contains(newRhs)) {
+                mrhs.getRightSides().add(newRhs);
+            }
+        }
+        mrhs.setnRHS(mrhs.getRightSides().size());
+        return mrhs;
+    }
+
     private List<MrhsEquation> breakExpandedEquation(MrhsEquation expanded) {
         List<MrhsEquation> result = new ArrayList<>();
         for (int i = 0; i < (expanded.getnCols() - 1); i++) {
             for (int j = i + 1; j < expanded.getnCols(); j++) {
-                result.add(columnsToEquation(i, j, expanded));
+                result.add(twoColumnsToEquation(i, j, expanded));
             }
+        }
+        for(int i = 0; i < expanded.getnCols(); i++){
+            result.add(oneColumnToEquation(i, expanded));
         }
         return result;
     }
 
-    private List<MrhsEquation> cleanUpSameEquations(List<MrhsEquation> mini) {
-        Set<MrhsEquation> set = new HashSet<>(mini);
-        return new ArrayList<>(set);
-    }
-
     protected List<MrhsEquation> expansion() {
         List<MrhsEquation> exp = new ArrayList<>();
-        List<List<Integer>> table = generateCombinationTable(2);
         MrhsEquation expanded = expandEquation();
         List<MrhsEquation> mini = breakExpandedEquation(expanded);
         for (MrhsEquation eq : mini) {
-            if(!eq.getRightSides().containsAll(table)){
-            //if (eq.getRightSides().size() != 4) {
-                eq.normalize();
+            if (!eq.getRightSides().containsAll(generateCombinationTable(eq.getnCols()))) {
+                if(eq.getnCols() != 1){
+                    eq.normalize();
+                }                
                 exp.add(eq);
             }
         }
-        return cleanUpSameEquations(exp);
+        return exp;
     }
 
     @Override
@@ -419,9 +437,8 @@ public class MrhsEquation {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.leftSide);
-        hash = 37 * hash + Objects.hashCode(this.rightSides);
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.leftSide);
         return hash;
     }
 
@@ -440,10 +457,10 @@ public class MrhsEquation {
         if (!Objects.equals(this.leftSide, other.leftSide)) {
             return false;
         }
-        if (!Objects.equals(this.rightSides, other.rightSides)) {
-            return false;
-        }
+        
         return true;
     }
+
+    
 
 }

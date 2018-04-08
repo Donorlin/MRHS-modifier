@@ -69,6 +69,7 @@ public class MrhsBuilder {
                 system.addBlock(eq);
             }
         }
+        system.cleanUp();
         return system;
     }
 

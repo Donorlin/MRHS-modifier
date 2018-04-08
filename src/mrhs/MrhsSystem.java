@@ -305,7 +305,7 @@ public class MrhsSystem {
     public boolean normalizeSystem() {
         for (MrhsEquation eq : system) {
             eq.normalize();
-        }        
+        }
         return true;
     }
 
@@ -546,13 +546,30 @@ public class MrhsSystem {
         return true;
     }
 
-    public boolean expansion(){
+    protected void cleanUp() {
+        for (int i = 0; i < system.size() - 1; i++) {
+            for (int j = i + 1; j < system.size(); j++) {
+                if (system.get(j).equals(system.get(i))) {
+                    if (!glue(i, j, 0)) {
+                        deleteBlock(j);
+                        deleteBlock(i);
+                        j--;
+                    } else {
+                        system.get(i).deleteZeroColumns();
+                    }
+                }
+            }
+        }        
+    }
+
+    public boolean expansion() {
         List<MrhsEquation> toBeAdded = new ArrayList<>();
-        for(MrhsEquation eq : system){            
+        for (MrhsEquation eq : system) {
             toBeAdded.addAll(eq.expansion());
         }
-        toBeAdded = new ArrayList<>(new HashSet<>(toBeAdded));
         system.addAll(toBeAdded);
+        nBlocks = system.size();
+        cleanUp();
         return true;
     }
     
