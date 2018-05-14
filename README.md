@@ -1,5 +1,5 @@
 # MRHS-modifier
-MRHS-modifier is tool used for the manipulation with system of Multiple-Right-Hand-Sides(MRHS) equations. It allows manual or heuristic optimalization of the given system. 
+MRHS-modifier is tool used for the manipulation with system of Multiple-Right-Hand-Sides (MRHS) equations. It allows manual or heuristic optimalization of the given system. 
 Program can be easily modified and used in various experiments. Thanks to input redirection we can automatize chain of execution of given commands. Implementation of new functionality can be easily (hopefully) done thanks to OOP approach.
 
 ## Getting Started
