@@ -69,7 +69,7 @@ help commandName
 
 ## Contributing
 
-I would be very happy for any suggestions, contributions or event request and complains. If you know how to optimize, refactor or make source code better please feel free to contact me. 
+I would be very happy for any suggestions, contributions or event request and complains. If you know how to optimize, refactor or make source code better, please feel free to contact me. 
 
 ## Authors
 
