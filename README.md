@@ -77,4 +77,4 @@ I would be very happy for any suggestions, contributions or event request and co
 
 ## Acknowledgments
 
-* Big thanks to doc. Ing. Pavol Zajac, PhD. for guidance and knowledge
+* Big thanks to Pavol Zajac for guidance and knowledge
